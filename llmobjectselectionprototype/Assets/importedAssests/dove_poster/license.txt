@@ -1,0 +1,11 @@
+Model Information:
+* title:	Dove Poster
+* source:	https://sketchfab.com/3d-models/dove-poster-e27db6f380cd44d29c3a6872d53378a8
+* author:	Jeremy_W (https://sketchfab.com/Jeremy_W)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Dove Poster" (https://sketchfab.com/3d-models/dove-poster-e27db6f380cd44d29c3a6872d53378a8) by Jeremy_W (https://sketchfab.com/Jeremy_W) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

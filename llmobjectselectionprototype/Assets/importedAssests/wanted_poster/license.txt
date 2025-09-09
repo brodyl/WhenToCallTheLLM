@@ -1,0 +1,11 @@
+Model Information:
+* title:	wanted poster
+* source:	https://sketchfab.com/3d-models/wanted-poster-4734aa35c8bf4896858959518d1a7fdd
+* author:	noortjeschuur (https://sketchfab.com/noortjeschuur)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "wanted poster" (https://sketchfab.com/3d-models/wanted-poster-4734aa35c8bf4896858959518d1a7fdd) by noortjeschuur (https://sketchfab.com/noortjeschuur) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

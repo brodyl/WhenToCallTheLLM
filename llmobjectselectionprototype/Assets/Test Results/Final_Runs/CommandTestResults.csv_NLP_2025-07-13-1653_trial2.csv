@@ -1,0 +1,88 @@
+Command,Difficulty,Expected,Found,Correct,Score,StageCount,TotalTime,TotalCost,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"Whiteboard",Easy,1,1,1,1,6,0.1504,0.000000,,0.0648,0.0321,0.0508,0.0024,,,0.0003,0.0000
+"A whiteboard",Easy,1,1,1,1,6,0.0999,0.000000,,0.0327,0.0334,0.0336,0.0002,,,0.0001,0.0000
+"The whiteboard",Easy,1,1,1,1,6,0.0912,0.000000,,0.0464,0.0217,0.0230,0.0002,,,0.0001,0.0000
+"Show me the whiteboard",Easy,1,1,1,1,6,0.0827,0.000000,,0.0324,0.0337,0.0164,0.0002,,,0.0001,0.0000
+"Where's the whiteboard",Easy,1,1,1,1,6,0.1008,0.000000,,0.0336,0.0335,0.0336,0.0002,,,0.0001,0.0000
+"Select the whiteboard",Easy,1,1,1,1,6,0.0874,0.000000,,0.0369,0.0332,0.0171,0.0002,,,0.0001,0.0000
+"I want to see the whiteboard",Easy,1,1,1,1,6,0.0999,0.000000,,0.0331,0.0334,0.0332,0.0002,,,0.0001,0.0000
+"Highlight the whiteboard",Easy,1,1,1,1,6,0.0980,0.000000,,0.0333,0.0314,0.0330,0.0002,,,0.0001,0.0000
+"Can I see the whiteboard",Easy,1,1,1,1,6,0.0837,0.000000,,0.0333,0.0335,0.0167,0.0002,,,0.0001,0.0000
+"Can I use the whiteboard",Easy,1,1,1,1,6,0.0844,0.000000,,0.0337,0.0341,0.0162,0.0003,,,0.0001,0.0000
+"The red laptop",Easy,1,1,1,1,6,0.1044,0.000000,,0.0322,0.0334,0.0172,0.0216,,,0.0001,0.0000
+"The apple laptop",Easy,1,1,1,1,8,0.1367,0.000000,,0.0326,0.0339,0.0217,0.0311,0.0167,0.0005,0.0001,0.0000
+"The silver iPhone",Easy,1,1,1,1,6,0.0987,0.000000,,0.0326,0.0337,0.0321,0.0003,,,0.0001,0.0000
+"The musical keyboard",Easy,1,1,1,1,6,0.1358,0.000000,,0.0329,0.0338,0.0351,0.0340,,,0.0001,0.0000
+"The yellow filing cabinet",Easy,4,4,4,1,8,0.1425,0.000000,,0.0333,0.0331,0.0182,0.0408,0.0165,0.0003,0.0003,0.0000
+"The blue office desk",Easy,7,7,7,1,8,0.1174,0.000000,,0.0335,0.0325,0.0203,0.0177,0.0124,0.0003,0.0006,0.0000
+"The table that is round and wooden",Easy,1,1,1,1,6,0.0999,0.000000,,0.0331,0.0337,0.0329,0.0002,,,0.0001,0.0000
+"The blue magnet that is blue",Easy,2,2,2,1,8,0.1174,0.000000,,0.0334,0.0326,0.0180,0.0208,0.0118,0.0004,0.0004,0.0000
+"The laptop with a Nvidia graphics card",Easy,1,1,1,1,6,0.1398,0.000000,,0.0335,0.0339,0.0361,0.0363,,,0.0001,0.0000
+"The Laptop. Not the Windows laptops, but the apple laptop",Easy,1,1,1,1,8,0.1488,0.000000,,0.0334,0.0335,0.0357,0.0333,0.0125,0.0003,0.0001,0.0000
+"The thing you draw on, I think it's called a whiteboard",Moderate,1,0,0,0,6,0.1167,0.000000,,0.0338,0.0341,0.0354,0.0131,,,0.0003,0.0000
+"A large board I can write on, but not a chalkboard",Moderate,1,3,0,0,8,0.1331,0.000000,,0.0338,0.0333,0.0202,0.0316,0.0137,0.0002,0.0003,0.0000
+"A large board to write on",Moderate,4,1,1,0.4,6,0.1063,0.000000,,0.0332,0.0362,0.0336,0.0031,,,0.0002,0.0000
+"A convenient place to store all my paper documents",Moderate,12,0,0,0,8,0.1487,0.000000,,0.0329,0.0338,0.0356,0.0332,0.0129,0.0000,0.0003,0.0000
+"A device I can use to browse the internet",Moderate,12,0,0,0,8,0.1494,0.000000,,0.0341,0.0332,0.0353,0.0338,0.0126,0.0002,0.0002,0.0000
+"A device I can connect to my computer to help in music production",Moderate,1,0,0,0,8,0.1319,0.000000,,0.0325,0.0337,0.0200,0.0321,0.0132,0.0003,0.0002,0.0000
+"A wired peripheral device I can connect to my computer to type on",Moderate,6,5,0,0,8,0.1337,0.000000,,0.0336,0.0336,0.0197,0.0326,0.0132,0.0002,0.0008,0.0000
+"A tool to stick pieces of paper together",Moderate,4,0,0,0,8,0.1330,0.000000,,0.0340,0.0331,0.0194,0.0333,0.0129,0.0000,0.0003,0.0000
+"Something I can use to make a phone call",Moderate,1,1,1,1,8,0.1508,0.000000,,0.0340,0.0349,0.0349,0.0329,0.0135,0.0004,0.0001,0.0000
+"Something I can throw my garbage into",Moderate,3,7,0,0,8,0.1501,0.000000,,0.0334,0.0328,0.0358,0.0335,0.0134,0.0003,0.0008,0.0000
+"The middle chalkboard",Easy,1,1,1,1,8,0.1350,0.000000,,0.0330,0.0337,0.0212,0.0316,0.0125,0.0027,0.0002,0.0000
+"The largest poster",Easy,1,1,1,1,8,0.1163,0.000000,,0.0328,0.0340,0.0172,0.0215,0.0105,0.0001,0.0002,0.0000
+"The widest poster",Easy,1,1,1,1,8,0.1009,0.000000,,0.0234,0.0262,0.0163,0.0214,0.0114,0.0020,0.0003,0.0000
+"The poster that is most short",Easy,1,4,1,0.4,8,0.1159,0.000000,,0.0327,0.0326,0.0174,0.0218,0.0107,0.0003,0.0005,0.0000
+"The empty trash bin",Moderate,1,1,1,1,8,0.1263,0.000000,,0.0328,0.0333,0.0173,0.0166,0.0162,0.0099,0.0002,0.0000
+"The topmost magnet",Easy,2,1,1,0.6666667,8,0.1168,0.000000,,0.0324,0.0341,0.0183,0.0189,0.0122,0.0007,0.0002,0.0000
+"The third cube",Easy,1,1,1,1,8,0.1520,0.000000,,0.0328,0.0331,0.0341,0.0381,0.0129,0.0007,0.0002,0.0000
+"The closest Oculus Quest Headset",Easy,1,0,0,0,8,0.1671,0.000000,,0.0347,0.0652,0.0197,0.0331,0.0134,0.0006,0.0005,0.0000
+"The door that is furthest away",Easy,1,2,1,0.6666667,8,0.1315,0.000000,,0.0326,0.0348,0.0312,0.0219,0.0105,0.0002,0.0002,0.0000
+"The door that is closest",Easy,1,2,1,0.6666667,8,0.1325,0.000000,,0.0333,0.0332,0.0169,0.0382,0.0103,0.0002,0.0004,0.0000
+"The poster furthest on the right",Hard,1,0,0,0,8,0.2359,0.000000,,0.0327,0.0328,0.1566,-0.1199,0.0128,0.1207,0.0002,0.0000
+"The challkboard on the left",Hard,1,0,0,0,8,0.2561,0.000000,,0.0383,0.0334,0.1713,-0.1179,0.0129,0.1179,0.0002,0.0000
+"The stapler on top of the round table",Easy,1,1,0,0,6,0.1007,0.000000,,0.0332,0.0335,0.0337,0.0002,,,0.0001,0.0000
+"The phone on the corner desk",Easy,1,13,0,0,8,0.1512,0.000000,,0.0329,0.0336,0.0222,0.0309,0.0141,0.0163,0.0012,0.0000
+"The office desk under the ceiling fan",Easy,4,1,0,0,6,0.1004,0.000000,,0.0342,0.0331,0.0328,0.0002,,,0.0001,0.0000
+"The garbage under the blue office desk",Easy,2,7,0,0,8,1.4831,0.000000,,0.0340,1.3652,0.0209,0.0347,0.0125,0.0153,0.0005,0.0000
+"The garbage bin beside the office desk",Easy,3,13,0,0,8,0.1682,0.000000,,0.0332,0.0337,0.0198,0.0350,0.0226,0.0232,0.0008,0.0000
+"The trash in the bin beside the chalkboard",Easy,5,3,0,0,8,0.1702,0.000000,,0.0335,0.0332,0.0361,0.0355,0.0136,0.0181,0.0003,0.0000
+"The light directly above me",Easy,1,0,0,0,8,0.5372,0.000000,,0.4160,0.0348,0.0328,0.0387,0.0146,0.0000,0.0004,0.0000
+"The door behind me",Easy,1,0,0,0,8,0.1466,0.000000,,0.0323,0.0317,0.0374,0.0323,0.0126,0.0000,0.0004,0.0000
+"The Oculus Quest in the middle cabinet",Hard,2,1,0,0,8,0.1534,0.000000,,0.0334,0.0359,0.0342,0.0331,0.0165,0.0001,0.0003,0.0000
+"The trash bin with nothing in it",Easy,1,0,0,0,8,0.1491,0.000000,,0.0337,0.0334,0.0360,0.0330,0.0124,0.0003,0.0002,0.0000
+"The Oculus Quest 3 on the yellow office desk",Moderate,1,6,0,0,8,0.4497,0.000000,,0.0696,0.3133,0.0208,0.0335,0.0116,0.0003,0.0006,0.0000
+"The blue office desk closest to the door beside the posters",Hard,1,0,0,0,8,0.1510,0.000000,,0.0346,0.0332,0.0330,0.0374,0.0124,0.0000,0.0003,0.0000
+"The blue magnet on the board beside the sofa ",Easy,1,1,0,0,6,0.0837,0.000000,,0.0341,0.0331,0.0162,0.0002,,,0.0001,0.0000
+"The trash in the bin beside the apple laptop ",Easy,5,1,0,0,8,0.1379,0.000000,,0.0339,0.0327,0.0314,0.0256,0.0140,0.0003,0.0001,0.0000
+"The stapler on the desk closest to me",Easy,1,0,0,0,8,0.1157,0.000000,,0.0328,0.0331,0.0198,0.0138,0.0159,0.0000,0.0003,0.0000
+"The laptop near the blue office desk with an oculus quest on top of it ",Easy,1,0,0,0,8,0.1586,0.000000,,0.0497,0.0344,0.0193,0.0422,0.0125,0.0003,0.0002,0.0000
+"The chair beside the lamp and the iphone ",Easy,1,1,0,0,6,0.0831,0.000000,,0.0334,0.0329,0.0165,0.0002,,,0.0001,0.0000
+"The oculus quest in the cabinet closest to the whiteboard ",Easy,1,1,0,0,6,0.1660,0.000000,,0.0667,0.0823,0.0167,0.0002,,,0.0001,0.0000
+"The chair nearest the yellow office desk closest to the door next to the posters ",Easy,1,0,0,0,8,0.1492,0.000000,,0.0352,0.0331,0.0320,0.0359,0.0126,0.0000,0.0003,0.0000
+"The device that can be used to staple paper, that is inside the filing cabinet. The filing cabinet under the office desk with an oculus quest on it. ",Easy,1,0,0,0,8,0.1523,0.000000,,0.0501,0.0499,0.0198,0.0186,0.0135,0.0002,0.0001,0.0000
+"The thing on the blue office desk. Its a light, but not the light on the ceiling ",Easy,1,1,0,0,6,0.1035,0.000000,,0.0490,0.0343,0.0199,0.0002,,,0.0001,0.0000
+"The Oculus Quest second from the left in the cabinets in front of me",Moderate,1,0,0,0,8,0.1319,0.000000,,0.0336,0.0329,0.0213,0.0311,0.0126,0.0000,0.0004,0.0000
+"The chalk of the chalkboard",Easy,3,3,0,0,8,0.1333,0.000000,,0.0331,0.0337,0.0221,0.0306,0.0130,0.0003,0.0004,0.0000
+"The chalk of the middle chalkboard",Easy,1,1,0,0,8,0.1500,0.000000,,0.0341,0.0334,0.0356,0.0333,0.0133,0.0001,0.0003,0.0000
+"the laptop placed on the corner office desk near the wall shelves",Easy,1,3,0,0,8,0.1325,0.000000,,0.0329,0.0339,0.0163,0.0214,0.0110,0.0169,0.0002,0.0000
+"the laptop on the desk near the chalkboard",Easy,1,3,0,0,8,0.1331,0.000000,,0.0346,0.0328,0.0197,0.0178,0.0138,0.0142,0.0003,0.0000
+"The lamp on the blue office desk next to the door",Easy,1,2,0,0,8,0.1371,0.000000,,0.0330,0.0336,0.0166,0.0194,0.0184,0.0159,0.0002,0.0000
+"The chalkboard on the left side of the wall",Easy,1,4,0,0,8,0.1672,0.000000,,0.0350,0.0477,0.0178,0.0391,0.0127,0.0147,0.0003,0.0000
+"The MIDI Keyboard to the right of the monitor",Easy,1,5,0,0,8,0.1500,0.000000,,0.0340,0.0327,0.0332,0.0362,0.0130,0.0003,0.0006,0.0000
+"A stapler on the table close to the whiteboard",Easy,1,1,0,0,6,0.0993,0.000000,,0.0337,0.0326,0.0328,0.0002,,,0.0001,0.0000
+"Blue cube on the top shelf of the wooden shelves",Easy,1,1,0,0,8,0.1486,0.000000,,0.0334,0.0328,0.0335,0.0328,0.0157,0.0001,0.0002,0.0000
+"Cube on the top right of the wooden shelves",Easy,2,3,0,0,8,0.1491,0.000000,,0.0336,0.0329,0.0331,0.0368,0.0123,0.0000,0.0003,0.0000
+"The black laptop sitting on the blue desk to the right of the other black laptop",Easy,1,2,1,0.6666667,8,0.3532,0.000000,,0.0344,0.0562,0.2125,0.0337,0.0128,0.0035,0.0002,0.0000
+"the laptop placed on the desk near the wall shelves",Hard,1,3,0,0,8,0.1506,0.000000,,0.0348,0.0321,0.0334,0.0203,0.0126,0.0171,0.0002,0.0000
+"the red magnet in the center of the circular table",Easy,1,1,0,0,6,0.1009,0.000000,,0.0343,0.0338,0.0324,0.0003,,,0.0001,0.0000
+"Select the cube on the top shelf",Hard,4,4,4,1,8,0.3712,0.000000,,0.1337,0.0334,0.1667,0.0175,0.0143,0.0045,0.0010,0.0000
+"The black chair that serves as a seat. It is to the right of the macbook pro and has some levers on it, as well as swivel mechanism so it can be turned. ",Easy,1,0,0,0,8,0.2068,0.000000,,0.0513,0.0813,0.0211,0.0370,0.0154,0.0000,0.0007,0.0000
+"Red cube on the wooden shelf right next to another yellow cube and green cube ",Moderate,1,4,1,0.4,8,0.1166,0.000000,,0.0349,0.0329,0.0171,0.0193,0.0116,0.0004,0.0003,0.0000
+"the monitor connected to the mouse and the keyboard placed on the office desk ",Hard,5,13,0,0,8,0.1836,0.000000,,0.0364,0.0458,0.0359,0.0382,0.0161,0.0102,0.0010,0.0000
+"The cube on the bottom shelf in front of a red cube, between a red cube and a green cube ",Hard,1,4,1,0.4,8,0.4689,0.000000,,0.0354,0.0473,0.2853,0.0193,0.0119,0.0695,0.0003,0.0000
+"Where's a spot I can take a nap? ",Moderate,1,0,0,0,8,0.1361,0.000000,,0.0340,0.0336,0.0243,0.0270,0.0163,0.0004,0.0005,0.0000
+"Is there some sort of device I can use to send a few emails ",Moderate,12,1,0,0,8,0.1327,0.000000,,0.0340,0.0326,0.0200,0.0324,0.0133,0.0003,0.0001,0.0000
+"What can I use to check my online bank statement? ",Moderate,12,0,0,0,8,0.1501,0.000000,,0.0352,0.0644,0.0223,0.0156,0.0122,0.0003,0.0002,0.0000
+"Where can I plug my USB stick from my camera into so i can upload my photos ",Moderate,12,0,0,0,8,0.1663,0.000000,,0.0666,0.0339,0.0194,0.0331,0.0128,0.0003,0.0002,0.0000
+"Where am I most likely to find the hard copies of last years tax reports ",Moderate,12,0,0,0,8,0.1173,0.000000,,0.0348,0.0326,0.0193,0.0190,0.0111,0.0000,0.0004,0.0000

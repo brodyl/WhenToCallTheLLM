@@ -1,0 +1,395 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 720,
+      "max": [
+        0.7331045866012573,
+        92.13970184326172,
+        1.2690510749816895
+      ],
+      "min": [
+        -0.7331045866012573,
+        10.159236907958984,
+        -0.4486711025238037
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 8640,
+      "componentType": 5126,
+      "count": 720,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 720,
+      "max": [
+        0.9810245633125305,
+        0.9725627899169922
+      ],
+      "min": [
+        0.9122034311294556,
+        0.7186370491981506
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 960,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 17280,
+      "componentType": 5126,
+      "count": 301,
+      "max": [
+        30.5,
+        96.13052368164063,
+        1.7059617042541504
+      ],
+      "min": [
+        -30.5,
+        5.130527496337891,
+        -8.144346237182617
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 20892,
+      "componentType": 5126,
+      "count": 301,
+      "max": [
+        0.3939306437969208,
+        0.2384156584739685,
+        -0.8014068603515625
+      ],
+      "min": [
+        -0.43389737606048584,
+        -0.4500729441642761,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 301,
+      "max": [
+        -0.8807429671287537,
+        0.14387573301792145,
+        0.43609923124313354,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.18468710780143738,
+        -0.40808576345443726,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 5760,
+      "componentType": 5126,
+      "count": 301,
+      "max": [
+        0.8677361011505127,
+        0.9999975562095642
+      ],
+      "min": [
+        0.1321653574705124,
+        2.4437904357910156e-06
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 8168,
+      "componentType": 5126,
+      "count": 301,
+      "max": [
+        0.8677361011505127,
+        0.9999975562095642
+      ],
+      "min": [
+        0.1321653574705124,
+        2.4437904357910156e-06
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 3840,
+      "componentType": 5125,
+      "count": 600,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "lena-wachs (https://sketchfab.com/lena-wachs)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/black-sabbath-band-poster-3322b789f5b7412faf5e930fd1eafeb6",
+      "title": "Black Sabbath Band Poster"
+    },
+    "generator": "Sketchfab-15.34.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 6240,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 10576,
+      "byteOffset": 6240,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 24504,
+      "byteOffset": 16816,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 4816,
+      "byteOffset": 41320,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 46136,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/poster_mat_baseColor.png"
+    },
+    {
+      "uri": "textures/poster_mat_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/poster_mat_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "pushpin_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.4952536959217225,
+          0.4661398208560475,
+          0.4314916885757414,
+          1.0
+        ],
+        "metallicFactor": 0.9887278582930756,
+        "roughnessFactor": 0.286634460547504
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "poster_mat",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "metallicRoughnessTexture": {
+          "index": 1
+        },
+        "roughnessFactor": 0.5249597423510467
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Poster1_pushpin_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Poster1_poster_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TANGENT": 6,
+            "TEXCOORD_0": 7,
+            "TEXCOORD_1": 8
+          },
+          "indices": 9,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "4b5b0747f7884141bf1ac8df214af9d6.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -50.63052749633789,
+        2.8372888565063477,
+        1.0
+      ],
+      "name": "Poster1"
+    },
+    {
+      "mesh": 0,
+      "name": "Poster1_pushpin_mat_0"
+    },
+    {
+      "mesh": 1,
+      "name": "Poster1_poster_mat_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ]
+}

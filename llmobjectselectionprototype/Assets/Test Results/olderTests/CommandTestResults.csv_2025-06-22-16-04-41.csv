@@ -1,0 +1,7 @@
+Command,Difficulty,Expected,Found,Correct,StageCount,TotalTime,TotalCost,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"Whiteboard",Easy,1,1,1,6,1.6682,0.000937,,0.8169,0.8167,0.0336,0.0005,,,0.0005,0.0000
+"A whiteboard",Easy,1,1,1,6,2.1249,0.000942,,1.3006,0.7831,0.0408,0.0002,,,0.0002,0.0000
+"The whiteboard",Easy,1,1,1,6,2.1006,0.000942,,1.0999,0.9838,0.0168,0.0001,,,0.0001,0.0000
+"Show me the whiteboard",Easy,1,1,1,6,2.0178,0.000945,,0.8670,1.1330,0.0174,0.0002,,,0.0001,0.0000
+"Where's the whiteboard",Easy,1,1,1,6,1.7004,0.000942,,0.8329,0.8339,0.0334,0.0002,,,0.0001,0.0000
+"Select the whiteboard",Easy,1,1,1,6,1.8351,0.000944,,0.6997,1.1167,0.0182,0.0003,,,0.0002,0.0000

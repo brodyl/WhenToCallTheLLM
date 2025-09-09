@@ -1,0 +1,25 @@
+Command,Difficulty,Expected,Found,Correct,Score,StageCount,TotalTime,TotalCost,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"The Oculus Quest Headset",Easy,19,18,18,0.972973,6,16.2744,0.001014,,1.1825,1.1832,3.4408,10.4652,,,0.0027,0.0000
+"The empty trash bin",Moderate,1,3,1,0.5,6,7.9018,0.001003,,1.4501,1.7993,1.9169,2.7352,,,0.0003,0.0000
+"The stapler on top of the round table",Easy,1,1,1,1,6,11.4163,0.001705,,1.2324,0.9127,8.6038,0.6672,,,0.0001,0.0000
+"The phone on the corner desk",Easy,1,1,1,1,6,4.3682,0.001120,,1.5833,1.6670,1.1170,0.0009,,,0.0001,0.0000
+"The office desk under the ceiling fan",Easy,4,4,4,1,6,15.5012,0.001701,,1.4500,0.8842,13.1657,0.0010,,,0.0004,0.0000
+"The garbage bin under the blue office desk",Easy,1,3,1,0.5,6,8.4837,0.001135,,1.3166,1.2501,2.4003,3.5164,,,0.0004,0.0000
+"The garbage bin beside the office desk",Easy,2,2,1,0.5,6,18.2518,0.001695,,1.4661,1.8328,13.4345,1.5180,,,0.0004,0.0000
+"The trash in the bin beside the chalkboard",Easy,5,2,0,0,6,24.7853,0.002378,,1.9165,1.3505,19.0163,2.5018,,,0.0002,0.0000
+"The trash bin with nothing in it",Easy,1,3,1,0.5,6,7.2842,0.001017,,1.0168,0.9016,1.7151,3.6503,,,0.0004,0.0000
+"The electronic keyboard",Easy,1,1,0,0,4,4.4213,0.000430,,-0.5996,,,4.4210,,,0.0003,0.0000
+"The blue office desk closest to the door beside the posters",Easy,1,1,0,0,6,3.6017,0.001821,,2.6159,-1.7331,2.7181,0.0006,,,0.0002,0.0000
+"The poster furthest on the right",Easy,1,1,0,0,6,11.9169,0.001083,,7.6675,-8.8836,7.8186,4.0981,,,0.0001,0.0000
+"The light directly above me",Easy,1,1,0,0,6,5.2659,0.001076,,3.1510,-4.1497,3.3157,1.9501,,,0.0001,0.0000
+"The chalkboard on the left",Easy,1,0,0,0,6,13.1497,0.001075,,7.6328,-8.6161,7.6835,5.4660,,,0.0002,0.0000
+"The door behind me",Easy,1,1,0,0,6,6.1506,0.001063,,2.7339,-3.7843,2.9166,3.2338,,,0.0002,0.0000
+"The Oculus Quest in the middle cabinet",Easy,7,2,0,0,6,7.0687,0.001129,,3.5347,-4.8843,3.5911,3.4772,,,0.0004,0.0000
+"The chalk of the chalkboard",Easy,3,9,0,0,5,5.5331,0.001623,,4.6800,-1.5672,,2.4194,,,0.0009,0.0000
+"The chalk of the middle chalkboard",Easy,1,1,0,0,6,18.7175,0.002278,,4.0999,4.6003,5.4174,4.5997,,,0.0002,0.0000
+"the laptop placed on the desk near the wall shelves",Easy,1,0,0,0,2,0.0001,0.000000,,,,,,,,0.0001,0.0000
+"The lamp on the blue office desk next to the door",Easy,1,0,0,0,4,5.1342,0.001116,,-2.7830,,,5.1340,,,0.0002,0.0000
+"The chalkboard on the left side of the wall",Easy,1,1,1,1,6,17.5896,0.003649,,3.0567,5.3436,5.2728,3.9163,,,0.0002,0.0000
+"The MIDI Keyboard to the right of the monitor",Easy,1,1,1,1,6,26.4997,0.002274,,14.7832,8.8000,2.9160,0.0004,,,0.0001,0.0000
+"the laptop on the desk near the chalkboard",Easy,1,0,0,0,5,7.3691,0.001230,,5.3506,-1.5336,,3.5519,,,0.0002,0.0000
+"A stapler on the table close to the whiteboard",Easy,1,1,0,0,2,0.0001,0.000000,,,,,,,,0.0001,0.0000

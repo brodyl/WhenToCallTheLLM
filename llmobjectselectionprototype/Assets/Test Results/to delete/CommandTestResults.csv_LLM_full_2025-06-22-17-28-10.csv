@@ -1,0 +1,21 @@
+Command,Difficulty,Expected,Found,Correct,Score,StageCount,TotalTime,TotalCost,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"The electronic keyboard",Easy,1,0,0,0,6,4.6781,0.000947,,1.1638,0.8817,1.1502,1.4821,,,0.0002,0.0000
+"The blue office desk closest to the door beside the posters",Easy,1,1,0,0,6,15.8948,0.001182,,1.2511,1.0488,10.7337,2.8590,,,0.0023,0.0000
+"The poster furthest on the right",Easy,1,1,0,0,6,2.7565,0.001027,,0.9000,0.8339,1.0166,0.0043,,,0.0018,0.0000
+"The light directly above me",Easy,1,0,0,0,6,15.5190,0.001024,,0.7663,0.8508,12.3342,1.5675,,,0.0002,0.0000
+"The chalkboard on the left",Easy,1,1,0,0,6,2.6505,0.001019,,0.8679,0.8520,0.9303,0.0002,,,0.0001,0.0000
+"The door behind me",Easy,1,0,0,0,6,13.8163,0.001004,,0.8706,0.8793,11.2839,0.7824,,,0.0002,0.0000
+"The Oculus Quest in the middle cabinet",Easy,7,3,0,0,6,22.8891,0.001075,,1.1330,0.8836,18.8691,2.0031,,,0.0004,0.0000
+"The Oculus Quest second from the left in the cabinets in front of me",Easy,1,1,0,0,6,3.3202,0.001251,,1.2345,0.7992,1.2836,0.0027,,,0.0002,0.0000
+"The chalk of the chalkboard",Easy,3,0,0,0,6,8.3169,0.001057,,1.2010,1.2487,4.5510,1.3161,,,0.0002,0.0000
+"The chalk of the middle chalkboard",Easy,1,1,1,1,6,5.2007,0.001070,,1.0168,1.3333,2.2167,0.6337,,,0.0002,0.0000
+"the laptop placed on the desk near the wall shelves",Easy,1,0,0,0,6,21.9349,0.001172,,1.4835,0.8829,15.0999,4.4684,,,0.0002,0.0000
+"The lamp on the blue office desk next to the door",Easy,1,0,0,0,6,3.5828,0.001187,,1.2500,1.0828,0.6163,0.6334,,,0.0002,0.0000
+"The chalkboard on the left side of the wall",Easy,1,1,0,0,6,2.9173,0.001086,,1.0505,0.8998,0.9668,0.0002,,,0.0001,0.0000
+"The MIDI Keyboard to the right of the monitor",Easy,1,0,0,0,6,3.2849,0.001072,,1.0674,0.8833,0.5162,0.8178,,,0.0003,0.0000
+"the laptop on the desk near the chalkboard",Easy,1,1,1,1,6,6.5180,0.001171,,1.3838,0.7999,2.9334,1.4008,,,0.0001,0.0000
+"A stapler on the table close to the whiteboard",Easy,1,1,0,0,6,3.6825,0.001178,,1.1655,1.1837,1.3329,0.0003,,,0.0001,0.0000
+"Blue cube on the top shelf of the wooden shelves",Easy,1,0,0,0,6,26.6354,0.001194,,1.8501,0.7667,23.2335,0.7850,,,0.0002,0.0000
+"Cube on the top right of the wooden shelves",Easy,2,7,1,0.2222222,6,24.7194,0.001130,,1.0003,0.8167,19.2876,3.6134,,,0.0015,0.0000
+"The black laptop sitting on the blue desk to the right of the other black laptop",Easy,1,1,1,1,6,6.1502,0.001210,,1.2999,0.7834,2.1837,1.8831,,,0.0001,0.0000
+"the red magnet in the center of the circular table",Easy,1,0,0,0,6,12.0362,0.001133,,1.2845,0.8008,9.2971,0.6536,,,0.0002,0.0000

@@ -1,0 +1,13 @@
+Command,Difficulty,Expected,Found,Correct,StageCount,TotalTime,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"The red laptop",Easy,1,1,1,6,1.9453,,1.0028,0.8066,0.0707,0.0642,,,0.0010,0.0000
+"The apple laptop",Easy,1,1,1,6,2.3856,,1.0587,1.2414,0.0409,0.0443,,,0.0002,0.0000
+"The silver iPhone",Easy,1,1,1,6,1.9772,,0.7703,1.1786,0.0272,0.0008,,,0.0004,0.0000
+"The green filing cabinet",Easy,1,1,1,6,2.0093,,1.0856,0.8400,0.0536,0.0298,,,0.0003,0.0000
+"The yellow filing cabinet",Easy,4,4,4,8,3.4816,,2.5940,0.8015,0.0313,0.0357,0.0173,0.0006,0.0012,0.0000
+"The blue office desk",Easy,7,7,7,8,2.2141,,1.1730,0.9343,0.0320,0.0543,0.0180,0.0006,0.0019,0.0000
+"The chalkboard with a wooden frame",Easy,3,3,3,8,2.1988,,1.2700,0.8318,0.0360,0.0428,0.0166,0.0006,0.0009,0.0000
+"The middle chalkboard with a wooden frame",Easy,1,2,1,8,2.4533,,1.4820,0.8822,0.0385,0.0302,0.0139,0.0056,0.0009,0.0000
+"The largest poster",Easy,1,1,1,8,2.4164,,1.6644,0.6551,0.0357,0.0450,0.0130,0.0028,0.0005,0.0000
+"The blue magnet",Easy,2,2,2,8,2.1176,,0.9693,1.0697,0.0306,0.0342,0.0132,0.0003,0.0003,0.0000
+"The Oculus Quest Headset",Easy,19,19,19,8,2.2726,,1.1784,0.9914,0.0326,0.0487,0.0167,0.0005,0.0044,0.0000
+"The empty trash bin",Easy,1,3,1,8,2.1107,,1.0500,0.9748,0.0265,0.0469,0.0118,0.0003,0.0004,0.0000

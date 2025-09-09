@@ -1,0 +1,11 @@
+Model Information:
+* title:	Poster - Calendar
+* source:	https://sketchfab.com/3d-models/poster-calendar-a45c72b5205049a7b7806a0329b8e1de
+* author:	jazz-the-giraffe (https://sketchfab.com/jazz-the-giraffe)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Poster - Calendar" (https://sketchfab.com/3d-models/poster-calendar-a45c72b5205049a7b7806a0329b8e1de) by jazz-the-giraffe (https://sketchfab.com/jazz-the-giraffe) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

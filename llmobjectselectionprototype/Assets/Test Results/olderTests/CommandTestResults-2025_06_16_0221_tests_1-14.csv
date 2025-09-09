@@ -1,0 +1,15 @@
+Command,Difficulty,Expected,Found,Correct,StageCount,TotalTime,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"Whiteboard",Easy,1,1,1,6,2.9846,,2.1062,0.8232,0.0515,0.0031,,,0.0006,0.0000
+"A whiteboard",Easy,1,1,1,6,2.6018,,1.3294,1.2187,0.0495,0.0038,,,0.0003,0.0000
+"The whiteboard",Easy,1,1,1,6,1.9846,,1.0008,0.9585,0.0246,0.0004,,,0.0003,0.0000
+"Show me the whiteboard",Easy,1,1,1,6,2.2192,,1.1106,1.0655,0.0422,0.0006,,,0.0003,0.0000
+"Where's the whiteboard",Easy,1,1,1,6,2.1068,,1.2418,0.8264,0.0378,0.0005,,,0.0003,0.0000
+"Select the whiteboard",Easy,0,1,0,6,3.0208,,1.5609,1.4322,0.0269,0.0004,,,0.0004,0.0000
+"I want to see the whiteboard",Easy,1,1,1,6,2.2238,,1.3499,0.8324,0.0404,0.0007,,,0.0004,0.0000
+"Highlight the whiteboard",Easy,1,1,1,6,2.5423,,1.3218,1.1914,0.0284,0.0004,,,0.0003,0.0000
+"Can I see the whiteboard",Easy,1,1,1,6,2.9038,,1.9742,0.8858,0.0428,0.0006,,,0.0003,0.0000
+"Can I use the whiteboard",Easy,1,1,1,6,2.2522,,0.9947,1.2294,0.0273,0.0005,,,0.0004,0.0000
+"The thing you draw on, I think it's called a whiteboard",Moderate,1,1,1,6,3.2964,,1.0075,2.2387,0.0497,0.0002,,,0.0002,0.0000
+"A large board I can write on",Moderate,4,1,1,6,2.2873,,1.2872,0.9432,0.0556,0.0008,,,0.0004,0.0000
+"A large board to write on",Moderate,4,1,1,6,2.7875,,1.7825,0.9728,0.0316,0.0004,,,0.0002,0.0000
+"A large board I can write on, but not a chalkboard",Moderate,1,1,1,6,2.3910,,1.3924,0.9750,0.0229,0.0004,,,0.0002,0.0000

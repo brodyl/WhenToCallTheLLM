@@ -1,0 +1,2 @@
+Command,Difficulty,Expected,Found,Correct,Score,StageCount,TotalTime,TotalCost,None,CheckRelationship,ExtractMentions,ParseMainObject,NameSearch,DescSearch,Intersection,RelationSearch,Done
+"The garbage under the blue office desk",Easy,2,7,0,0,8,0.1667,0.000000,,0.0334,0.0519,0.0340,0.0168,0.0132,0.0170,0.0004,0.0000

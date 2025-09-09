@@ -1,0 +1,11 @@
+Model Information:
+* title:	Basket
+* source:	https://sketchfab.com/3d-models/basket-66a448a2a9f7479aa272fa3f44ff2ce9
+* author:	StayLord (https://sketchfab.com/StayLord)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Basket" (https://sketchfab.com/3d-models/basket-66a448a2a9f7479aa272fa3f44ff2ce9) by StayLord (https://sketchfab.com/StayLord) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,566 @@
+{
+  "accessors": [
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        1.0,
+        1.0,
+        4.371138828673793e-08
+      ],
+      "min": [
+        -1.0,
+        -1.999056339263916,
+        -4.371138828673793e-08
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 312,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        0.0,
+        -4.371138828673793e-08,
+        1.0
+      ],
+      "min": [
+        0.0,
+        -4.371138828673793e-08,
+        1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        0.9999082088470459,
+        0.9312744140625
+      ],
+      "min": [
+        9.179115295410156e-05,
+        0.08794474601745605
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5125,
+      "count": 72,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 5,
+      "componentType": 5126,
+      "count": 9,
+      "max": [
+        1.0,
+        0.0,
+        1.8007156654675782e-07,
+        0.0,
+        2.907576401867118e-08,
+        1.0,
+        0.0,
+        0.0,
+        1.800715381250484e-07,
+        0.0,
+        1.0000001192092896,
+        0.0,
+        0.0,
+        1.009720802307129,
+        5.28660367435721e-15,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -2.907579244038061e-08,
+        0.0,
+        0.0,
+        0.0,
+        -1.0000001192092896,
+        -5.235719017083855e-15,
+        0.0,
+        0.0,
+        -1.1920930376163597e-07,
+        1.0,
+        0.0,
+        -2.9358359299180847e-08,
+        -1.6211662292480469,
+        0.0,
+        1.0
+      ],
+      "type": "MAT4"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 26,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        0.31416574120521545,
+        0.294317364692688,
+        0.24680377542972565,
+        0.2279192954301834
+      ],
+      "min": [
+        0.2817915081977844,
+        0.25198039412498474,
+        0.2081245332956314,
+        0.1650998741388321
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 6,
+      "componentType": 5126,
+      "count": 40,
+      "max": [
+        1.6666666269302368
+      ],
+      "min": [
+        0.0416666679084301
+      ],
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 7,
+      "componentType": 5126,
+      "count": 40,
+      "max": [
+        0.023975124582648277,
+        0.003417389467358589,
+        0.004055059980601072,
+        1.0
+      ],
+      "min": [
+        -3.476963522327549e-15,
+        -1.4285812048836326e-14,
+        8.132197096372639e-16,
+        0.9996985197067261
+      ],
+      "type": "VEC4"
+    }
+  ],
+  "animations": [
+    {
+      "channels": [
+        {
+          "sampler": 0,
+          "target": {
+            "node": 13,
+            "path": "rotation"
+          }
+        }
+      ],
+      "name": "ArmatureAction",
+      "samplers": [
+        {
+          "input": 7,
+          "interpolation": "LINEAR",
+          "output": 8
+        }
+      ]
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "wojteX (https://sketchfab.com/wojteX)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/honda-civic-at-mount-fuji-poster-02809c61268345f4a634d0da1033b3d7",
+      "title": "Honda Civic at Mount Fuji – Poster"
+    },
+    "generator": "Sketchfab-16.32.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 208,
+      "byteStride": 8,
+      "name": "shortBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 208,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 208,
+      "byteOffset": 496,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 624,
+      "byteOffset": 704,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 416,
+      "byteOffset": 1328,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 576,
+      "byteOffset": 1744,
+      "name": "floatBufferViews"
+    },
+    {
+      "buffer": 0,
+      "byteLength": 160,
+      "byteOffset": 2320,
+      "name": "floatBufferViews"
+    },
+    {
+      "buffer": 0,
+      "byteLength": 640,
+      "byteOffset": 2480,
+      "byteStride": 16,
+      "name": "floatBufferViews"
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 3120,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/Texture_baseColor.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Texture",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.331818,
+        "roughnessFactor": 0.313636
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Object_0",
+      "primitives": [
+        {
+          "attributes": {
+            "JOINTS_0": 5,
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2,
+            "WEIGHTS_0": 6
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        0.28567105531692505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        6.343171661636339e-17,
+        -0.28567105531692505,
+        0.0,
+        0.0,
+        0.28567105531692505,
+        6.343171661636339e-17,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "root"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "GLTF_SceneRootNode"
+    },
+    {
+      "children": [
+        4
+      ],
+      "matrix": [
+        -0.999999999999996,
+        8.742277657347569e-08,
+        0.0,
+        0.0,
+        -8.742277657347569e-08,
+        -0.999999999999996,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.9694246649742126,
+        0.0,
+        1.0
+      ],
+      "name": "Armature_9"
+    },
+    {
+      "children": [
+        5,
+        7,
+        6
+      ],
+      "name": "GLTF_created_0"
+    },
+    {
+      "children": [
+        8
+      ],
+      "name": "GLTF_created_0_rootJoint"
+    },
+    {
+      "name": "Plane_8"
+    },
+    {
+      "mesh": 0,
+      "name": "Object_7",
+      "skin": 0
+    },
+    {
+      "children": [
+        9
+      ],
+      "name": "Bone_7",
+      "rotation": [
+        -2.9802322387695313e-08,
+        -9.003575485166948e-08,
+        2.917353114639809e-08,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        0.9999999403953552,
+        0.9999999403953552
+      ],
+      "translation": [
+        3.5227998296250007e-09,
+        -0.04029613733291626,
+        0.0
+      ]
+    },
+    {
+      "children": [
+        10
+      ],
+      "name": "Bone.004_6",
+      "rotation": [
+        -2.2437858303536685e-15,
+        -1.1524664211772125e-14,
+        -1.8138363532503587e-15,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.375840961933136,
+        -2.117582368135751e-22
+      ]
+    },
+    {
+      "children": [
+        11
+      ],
+      "name": "Bone.002_5",
+      "rotation": [
+        -2.2437858303536685e-15,
+        -1.1524665058805072e-14,
+        -5.36655003205086e-15,
+        1.0
+      ],
+      "translation": [
+        -2.6645352591003757e-15,
+        0.3758409917354584,
+        6.352747104407253e-22
+      ]
+    },
+    {
+      "children": [
+        12
+      ],
+      "name": "Bone.006_4",
+      "rotation": [
+        -2.243784136287774e-15,
+        -4.41923770120407e-15,
+        8.844304683151144e-15,
+        1.0
+      ],
+      "translation": [
+        6.661338147750939e-16,
+        0.37584108114242554,
+        3.7504482064253647e-22
+      ]
+    },
+    {
+      "children": [
+        13
+      ],
+      "name": "Bone.001_3",
+      "rotation": [
+        -2.2437860421119053e-15,
+        -1.1524664211772125e-14,
+        1.7388777490666158e-15,
+        1.0
+      ],
+      "translation": [
+        -1.0658141036401503e-14,
+        0.37584108114242554,
+        2.752857078576476e-21
+      ]
+    },
+    {
+      "children": [
+        14
+      ],
+      "name": "Bone.005_2",
+      "rotation": [
+        -2.2437858303536685e-15,
+        -1.1524664211772125e-14,
+        -3.7479090333634654e-17,
+        1.0
+      ],
+      "translation": [
+        3.552713678800501e-15,
+        0.37584108114242554,
+        -1.1258075054301695e-22
+      ]
+    },
+    {
+      "children": [
+        15
+      ],
+      "name": "Bone.003_1",
+      "rotation": [
+        -2.2437849833207213e-15,
+        -4.419237277687596e-15,
+        8.844305530184091e-15,
+        1.0
+      ],
+      "translation": [
+        -1.4210854715202004e-14,
+        0.375840961933136,
+        3.58648671107122e-21
+      ]
+    },
+    {
+      "name": "Bone.007_0",
+      "rotation": [
+        -2.243789642001931e-15,
+        -5.415722666331224e-14,
+        -3.734097314125537e-14,
+        1.0
+      ],
+      "translation": [
+        -1.4210854715202004e-14,
+        0.37584102153778076,
+        3.0414538511683352e-21
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "skins": [
+    {
+      "inverseBindMatrices": 4,
+      "joints": [
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "skeleton": 5
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ]
+}
