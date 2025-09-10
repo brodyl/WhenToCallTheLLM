@@ -1,0 +1,929 @@
+___________________________________________________________________________________________________________________
+Example of using pipeline 3 (LLM end-to-end) where we process a message only using an LLM, which includes sending
+all scene metadata in a prompt for parsing. This example showcases all five prompts used in out algorithm, with the
+final prompt in step 4b being the heaviest prompt, only required if we don't have a perfect match when searching by
+names only.
+
+Example user command (utterance):   "The blue office desk"
+
+Algorithm Steps:
+    1. A prompt is sent to LLM to check if there's any spatial relationships between objects
+    2. A prompt is sent to LLM to parse out all objects and attributes mentioned in the command
+    3. A prompt is sent to LLM to parse out all the main object of interest
+    4a. A prompt is sent to LLM with all names+uuids of scene objects to match with main object
+        If there's no exact match then:
+    4b. A prompt is sent to LLM with all descriptsion+uuids of scene objects to match with main object
+
+    All possible matches are returned
+
+Below is this the log of messages from this process, including the LLM prompts
+In this case the algorithm successfully finds all seven blue office desks. This is an ambiguous command as there are
+ multiple instances of blue office desks.
+___________________________________________________________________________________________________________________
+
+
+===================================================================================================================
+STEP 1 --> A prompt is sent to LLM to check if there's any spatial relationships between objects
+===================================================================================================================
+You are an API-style assistant.
+Return **one valid JSON object** with a top-level key "relationships" whose value is an array of objects, each
+containing: "main_object", "spatial_relation", "related_object".
+If any of the relations are between an object and the user, label the related object as "*user".
+If the relational phrase refers to an object's position within a group of the same object types (e.g., ordinal: "second picture", or extremal: "middle picture", "leftmost cup"), then ignore this spatial relationship, as it describes intra-category positioning rather than a spatial relationship between distinct objects. However, if the relational word is with respect to a different object, then include it (ie: "Bottle furthest from the sink" has a relation 'furthest from')
+
+### Scene-specific named entities
+Treat each bullet as a single object head (do NOT split them):
+- Cabinet
+- Cabinet Door
+- Calendar
+- Ceiling
+- Ceiling Fan
+- Ceiling light
+- Chalk
+- Chalkboard
+- Computer Keyboard
+- Computer Monitor
+- Computer mouse
+- Corner office desk
+- Cube
+- Desktop Computer
+- Door
+- Filing Cabinet
+- iMac Computer
+- iMac Desktop Setup
+- iMac Keyboard
+- iMac Mouse
+- iMac Stylus
+- iPhone
+- Lamp
+- Laptop
+- Magnet
+- MIDI Keyboard
+- Oculus Quest 2
+- Oculus Quest 3
+- Office Chair
+- Office Desk
+- Office Floor
+- Portable Whiteboard Frame
+- Poster
+- Quest 2 Box
+- Quest touch controller
+- Shelf
+- Sofa
+- Stapler
+- Table
+- Trash
+- Trash Bin
+- Wall
+- Wall Rack
+- Whiteboard
+
+### Examples
+User: "Select the stapler on the wooden table"
+Assistant:
+{
+  "relationships": [
+    {"main_object": "stapler", "spatial_relation": "on", "related_object": "wooden table"}
+  ]
+}
+
+User: "Select the dim light directly above where I'm standing"
+Assistant:
+{
+  "relationships": [
+    {"main_object": "light", "spatial_relation": "above", "related_object": "*user"}
+  ]
+}
+
+User: "Select the blue office desk closest to the door beside the posters on the wall"
+Assistant:
+{
+  "relationships": [
+    {"main_object": "blue office desk", "spatial_relation": "closest to", "related_object": "door"},
+    {"main_object": "door", "spatial_relation": "beside", "related_object": "posters"},
+    {"main_object": "posters", "spatial_relation": "on", "related_object": "wall"}
+  ]
+}
+
+Note that some relationships may be implied based on the context such as the following example
+User: "On the tree in the garden, select the apple on the broken branch"
+Assistant:
+{
+  "relationships": [
+    {"main_object": "apple", "spatial_relation": "on", "related_object": "broken branch"},
+    {"main_object": "broken branch", "spatial_relation": "on", "related_object": "tree"},
+    {"main_object": "tree", "spatial_relation": "in", "related_object": "garden"}
+  ]
+}
+
+Note that the word 'with' might not indicate a second object, but rather an additional descriptor of an object. In the following example we can consider the Nvidia graphics card to be an additional description of the laptop.
+User: "Select the silver laptop with a Nvidia graphics card"
+Assistant:
+{
+  "relationships": []
+}
+
+User: "Select the red magnet"
+Assistant:
+{ "relationships": [] }
+
+User: "Select the book on top of the shelf"
+Assistant:
+{
+  "relationships": [
+    {"main_object": "book", "spatial_relation": "atop", "related_object": "shelf"}
+  ]
+}
+
+Note that 'of' is not a spatial relationship token when used alone.
+User: "Select the knight of the queen"
+Assistant:
+{
+  "relationships": []
+}
+
+User: "What time is it?"
+Assistant:
+{ "relationships": [] }
+
+
+
+===================================================================================================================
+STEP 1 --> JSON response from LLM
+===================================================================================================================
+{
+  "relationships": []
+}
+
+
+===================================================================================================================
+STEP 2 --> A prompt is sent to LLM to parse out all objects and attributes mentioned in the command
+===================================================================================================================
+You are an API-style assistant.
+Return **one valid JSON object** with a top-level key "objects".
+Each item in that array has:
+  • "object_text"  – full phrase as spoken/written by user. If there's no definitive object name, then this is the description of the object.
+  • "head"         – the head noun or named entity (default to named entity if it exists).  If the user only describes the object, without giving a specific name, and you can not determine the name based on the provided named entities, then use the name 'none' and give one summarized descriptor.
+  • "descriptors"  – list of modifier words (can be empty). Only include adjectival modifiers, superlative references, or ordinal numeral modifiers. Simplify compound or verbose modifiers when possible (e.g. "bottle with nothing in it" → "emtpy bottle", "box with no label" → "unlabeled box").
+
+### Scene-specific named entities
+Treat each bullet as a single object head (do NOT split them):
+- Cabinet
+- Cabinet Door
+- Calendar
+- Ceiling
+- Ceiling Fan
+- Ceiling light
+- Chalk
+- Chalkboard
+- Computer Keyboard
+- Computer Monitor
+- Computer mouse
+- Corner office desk
+- Cube
+- Desktop Computer
+- Door
+- Filing Cabinet
+- iMac Computer
+- iMac Desktop Setup
+- iMac Keyboard
+- iMac Mouse
+- iMac Stylus
+- iPhone
+- Lamp
+- Laptop
+- Magnet
+- MIDI Keyboard
+- Oculus Quest 2
+- Oculus Quest 3
+- Office Chair
+- Office Desk
+- Office Floor
+- Portable Whiteboard Frame
+- Poster
+- Quest 2 Box
+- Quest touch controller
+- Shelf
+- Sofa
+- Stapler
+- Table
+- Trash
+- Trash Bin
+- Wall
+- Wall Rack
+- Whiteboard
+
+### Examples
+User: "Select the largest shiny blue pot on top of the wooden table in the kitchen. The pot that is furthest on the left"
+Assistant:
+{
+  "objects": [
+    {"object_text": "largest shiny blue pot", "head": "pot", "descriptors": ["largest","shiny","blue", "furthest left"]},
+    {"object_text": "wooden table", "head": "table", "descriptors": ["wooden"]},
+    {"object_text": "kitchen", "head": "kitchen", "descriptors": []}
+  ]
+}
+
+User: "The dirty bowl that you left in the sink. Not the brown bowl, the white one."
+Assistant:
+{
+  "objects": [
+    {"object_text": "dirty white bowl", "head": "bowl", "descriptors": ["dirty","white"]},
+    {"object_text": "brown bowl", "head": "bowl", "descriptors": ["brown"]},
+    {"object_text": "sink", "head": "sink", "descriptors": []}
+  ]
+}
+
+User: "The thing that I eat soup out of. Not the brown bowl, the white one."
+Assistant:
+{
+  "objects": [
+    {"object_text": "The white thing that I eat soup out of", "head": "none", "descriptors": ["white thing which can hold soup"]},
+    {"object_text": "brown bowl", "head": "bowl", "descriptors": ["brown"]},
+    {"object_text": "sink", "head": "sink", "descriptors": []}
+  ]
+}
+
+User: "the laptop placed on the desk near the wall shelves"
+Assistant:
+{
+  "objects": [
+    {"object_text": "the laptop", "head": "laptop", "descriptors": []},
+    {"object_text": "the desk", "head": "desk", "descriptors": []},
+    {"object_text": "the wall shelves", "head": "shelves", "descriptors": []}
+  ]
+}
+
+Note that some relationships are between the same type of object
+User: "Select the bottle furthest on the right"
+
+User: "What time is it?"
+Assistant:
+{ "objects": [] }
+
+
+===================================================================================================================
+STEP 2 --> JSON response from LLM
+===================================================================================================================
+{
+  "objects": [
+    {"object_text": "the blue office desk", "head": "office desk", "descriptors": ["blue"]}
+  ]
+}
+
+
+
+===================================================================================================================
+STEP 3 --> A prompt is sent to LLM to parse out all the main object of interest
+===================================================================================================================
+You are an API-style assistant.
+Return **one valid JSON object** with a top-level key "mainObj".
+The value of "mainObj" is itself an object with:
+  • "main_object"  – the head noun or named entity. If the user only describes the object, without giving a specific name, and you can not determine the name based on the provided text, then use the name 'none' and have one long descriptor.
+  • "descriptors"  – list of modifiers (may be empty). Only include adjectival modifiers, superlative references, or ordinal numeral modifiers. Simplify compound or verbose modifiers when possible (e.g. "bottle with nothing in it" → "emtpy bottle", "box with no label" → "unlabeled box").
+
+### Scene-specific named entities
+Treat each bullet as a single object head (do NOT split them):
+- Cabinet
+- Cabinet Door
+- Calendar
+- Ceiling
+- Ceiling Fan
+- Ceiling light
+- Chalk
+- Chalkboard
+- Computer Keyboard
+- Computer Monitor
+- Computer mouse
+- Corner office desk
+- Cube
+- Desktop Computer
+- Door
+- Filing Cabinet
+- iMac Computer
+- iMac Desktop Setup
+- iMac Keyboard
+- iMac Mouse
+- iMac Stylus
+- iPhone
+- Lamp
+- Laptop
+- Magnet
+- MIDI Keyboard
+- Oculus Quest 2
+- Oculus Quest 3
+- Office Chair
+- Office Desk
+- Office Floor
+- Portable Whiteboard Frame
+- Poster
+- Quest 2 Box
+- Quest touch controller
+- Shelf
+- Sofa
+- Stapler
+- Table
+- Trash
+- Trash Bin
+- Wall
+- Wall Rack
+- Whiteboard
+
+### Examples
+User: "Select the little black box furthest on the left on the table"
+Assistant:
+{
+  "mainObj": {
+    "main_object": "box", "descriptors": ["little", "black", "furthest left"]
+  }
+}
+
+User: "Pick up the book on the shelf in the other room"
+Assistant:
+{
+  "mainObj": {
+    "main_object": "book", "descriptors": []
+  }
+}
+
+User: "Where's the thing I lost last week. The tape measure. I left it in the workshop. You know, the yellow and black one?"
+Assistant:
+{
+  "mainObj": {
+    "main_object": "tape measure", "descriptors": ["yellow","black"]
+  }
+}
+
+User: "Where's the thing I lost last week. It's used for determining the dimensions of things. I left it in the workshop. You know, the yellow and black thing?"
+Assistant:
+{
+  "mainObj": {
+    "main_object": "none", "descriptors": ["yellow and black thing used for determining dimensions that was lost last week in the workshop"]
+  }
+}
+
+User: "What time is it?"
+Assistant:
+{
+  "mainObj": {
+    "main_object": "none", "descriptors": []
+  }
+}
+
+
+===================================================================================================================
+STEP 3 --> JSON response from LLM
+===================================================================================================================
+{
+  "mainObj": {
+    "main_object": "office desk",
+    "descriptors": ["blue"]
+  }
+}
+
+
+
+===================================================================================================================
+STEP 4a --> A prompt is sent to LLM with all names+uuids of scene objects to match with main object
+===================================================================================================================
+You are an API-style assistant.
+Return **one valid JSON object** whose single top-level key is "object_matches".
+
+Each element of "object_matches" must be an object with **exactly**:
+  • "id"          – the unique object ID corresponding to the matching text
+
+Rules:
+1. Only include IDs that appear in the scene inventory.
+2. A match is **case-insensitive semantic equivalence** (e.g. "macbook pro" ⟶ "laptop").
+3. If nothing matches, respond with an empty list: {"object_matches": []}
+4. Return ALL possible matches.
+5. Return no additional keys, comments, or trailing commas.
+
+### Format Examples
+Example 'Scene inventory':
+000001: apple laptop
+000002: apple laptop
+000003: MacBook Pro
+000004: standing desk
+000005: Dell Computer
+Example 'Main object of interest':
+"computer"
+Example 'User command':
+"Select the silver computer on the desk in the hallway."
+
+Assistant:
+{
+  "object_matches":[
+    {"id":"000001"},
+    {"id":"000002"},
+    {"id":"000003"},
+    {"id":"000005"}
+  ]
+}
+
+### Scene inventory
+9432f9f8-4355-4eb0-aa3f-86f1f083ff96: Cabinet
+90390ad1-f1b8-4de1-a19b-d498886c8863: Cabinet
+8568f42e-5156-4b30-855d-fd657a169e33: Cabinet
+255f15cd-9b7f-45ed-a063-20b84d9e700c: Cabinet
+79bef981-39dc-4747-8d5b-7e2260c528eb: Cabinet
+fe479382-0597-45e2-8595-3667797dabcd: Cabinet
+08b3fa68-79bb-4aad-b014-a62e155aad23: Cabinet
+1518abb0-0400-4924-8f7e-3466dc857c30: Cabinet Door
+2d586525-01e1-4d80-a332-51135b04b555: Cabinet Door
+517c97d1-60de-45c9-accd-497a6c8906a5: Cabinet Door
+3802c1ac-aa9f-4f3f-a18d-54297f78e7bf: Cabinet Door
+d0f4c799-f6bd-4447-bdc9-b3f1bcdcf427: Cabinet Door
+7a3bf6ba-2671-4e06-b463-5a9bdc167e67: Cabinet Door
+33f0d553-0e65-4ea2-b590-167165a62e2e: Cabinet Door
+739de7d8-4131-4fa4-86aa-b7f85cf4f833: Cabinet Door
+87912380-155e-4020-924d-c6eb70302f95: Cabinet Door
+0bcc4ad9-eacc-42c2-8e7e-f0abb12d2c06: Cabinet Door
+5b1cb405-4b1d-4d57-b6a3-0db12622cafe: Cabinet Door
+42269b00-7ae3-4ff4-b380-77cab482634e: Cabinet Door
+c656c02f-bf19-4aa5-8755-ef9a8c389add: Cabinet Door
+1e21ade8-4f32-41e2-be08-abefedd13ba4: Calendar
+ac33c400-f7db-49ef-9b82-92eb59e57873: Ceiling
+1e9deca6-7973-458e-9553-cc64e1abda91: Ceiling Fan
+25f4145c-9bc8-4ed3-975e-f08886414a58: Ceiling light
+8edf541b-daac-428d-bb04-71d39cb7d2de: Ceiling light
+0d41ec23-ed17-4d09-be3a-cda856c723b2: Ceiling light
+d6406a6d-2941-422b-a596-802a36c1ef13: Ceiling light
+dad16371-bd35-4cc0-ae6f-ba250a8dba7e: Ceiling light
+e1bc7f02-ba7a-4791-aba3-2cbee6e1d363: Ceiling light
+9fa02371-da6c-4c57-81fc-16c9d4a869cc: Ceiling light
+64d35939-ff74-4ebd-8cd7-c4d1a0deb7bb: Ceiling light
+371a6c23-2216-4327-8992-af1153e76da4: Ceiling light
+513bb7fa-cf25-4d32-901a-c419bccb9d7d: Chalk
+bd112ebd-09b7-479e-a888-60aab41c4c7c: Chalk
+d0b8bba6-789e-412b-91db-b84c4dfa3d46: Chalk
+c1e34f33-554f-4a3e-ad06-ee172d7e1265: Chalkboard
+9e919f65-c795-46e6-9ac2-b4357e0ff183: Chalkboard
+9977ad1f-faa1-4655-b2f0-c07d069c208c: Chalkboard
+6b2e5460-acec-409f-9888-337728f9f1c7: Computer Keyboard
+939bce90-292c-425c-8ed4-dbbbe89f7042: Computer Keyboard
+36ccfcd5-8621-42aa-8de7-9aa8d7a4ae5e: Computer Keyboard
+32de93a6-9875-4047-a723-ee2ec675111d: Computer Keyboard
+22169654-a457-4424-b10a-e32145a67243: Computer Keyboard
+c276037a-a7e0-4520-8248-5db668f2f0c2: Computer Monitor
+f7732f2e-6080-4cda-aa9d-0507f20b32d3: Computer Monitor
+6bda498e-b786-4bac-874f-8f613ee14ab1: Computer Monitor
+78d07567-d4c3-4862-afc9-d51b3a5bad5d: Computer Monitor
+71971aa6-d317-47fa-b8b0-98b538e0668d: Computer Monitor
+e1e8d891-0969-48ec-99bc-b4c05acfa465: Computer mouse
+b04f7bc1-5e3f-42b4-ac12-e07187d41093: Computer mouse
+489ddb6c-2fb0-4770-83a8-7795aa9a6aea: Computer mouse
+419144ac-b317-4914-911a-76b1b7e23339: Computer mouse
+d31039b4-c79d-4c00-ad5e-d08ca306010d: Corner office desk
+3f515c39-98cb-4e07-9664-517a1857d64f: Cube
+baf9c316-1e8b-485f-86a2-d9debffd9618: Cube
+a1dd3af3-338a-49f2-a021-3e43f730ab9d: Cube
+e2cebd2c-15f1-44ba-b1d7-e73271ccc312: Cube
+335c1cf1-c816-4cce-9ed0-e317eb21fca4: Cube
+ced786e3-38de-4a80-8a01-b746ce10cde1: Cube
+5bbbc03d-83bb-4628-a8af-119cbe7fa625: Cube
+43fe3398-6683-4c05-b56a-4e1a4cddc181: Cube
+56396897-cda5-4009-a9e7-cb92a2e1fcab: Cube
+43668a42-8d85-49f1-bd41-982177b5b1d4: Cube
+a80fb8b5-0e55-4eb8-83dc-e2bb91ab26e6: Cube
+e235cc7b-198b-42d3-9388-351fbb344cae: Cube
+55b3ca06-c4de-4fbf-958a-d4a9bfc9343b: Cube
+f3c92403-0685-4c63-a026-f6a824ce7665: Cube
+e8592514-42d4-4d35-aae4-2f6d5d8005da: Cube
+042e6b36-caf1-4de9-89dc-9a9919443eb7: Cube
+3c10629a-5731-4df7-8d3c-e5a626e10939: Cube
+7cdb9b90-f989-48cc-b3e8-efa9663e8418: Cube
+b0951860-9037-4412-b8b4-7aacd0f83ce9: Desktop Computer
+0301e3e1-9720-43bc-b5c0-0b614daf32ae: Desktop Computer
+1a6bb286-827c-4c9e-ad54-b07ae7a3c242: Desktop Computer
+7424d901-d398-4130-adab-fbf36d87b437: Desktop Computer
+ea6ddbbc-e3d7-4ed6-9962-43c167dad89f: Desktop Computer
+46d3d3e9-3d4f-4a7d-a368-c88cf53f3d97: Door
+d2c88da2-645f-43fd-b721-adbefb2dc62b: Door
+32bfcdb0-f6b9-4e39-9af5-5e9fc93c01fa: Filing Cabinet
+6da9dc23-507a-44c0-8fb3-d563851fa538: Filing Cabinet
+e13151c5-5a16-41d3-9d0d-d4c7dbf70a92: Filing Cabinet
+d63d0923-a9e3-4afd-84d3-d93f24d73861: Filing Cabinet
+837ad43d-b080-41be-b9e0-057fca995088: Filing Cabinet
+6229b035-0ee9-4de6-b398-8ff0ebe32f8c: Filing Cabinet
+065b214d-c0c1-42fe-ab2a-68963bf1dd6f: Filing Cabinet
+4fcc0f03-2128-437c-a8de-895c65fd2fd7: Filing Cabinet
+81e25fe0-3c67-44e8-ad93-5af22957ea56: Filing Cabinet
+d7378930-c290-47c1-ad9e-309c42391be3: Filing Cabinet
+e0adcb21-bc37-4ad2-b610-8b257c788f2a: Filing Cabinet
+ced22f65-5cd8-40a6-ac58-f74dc0395a79: Filing Cabinet
+d556993b-6e46-43ec-b379-5555220c087c: iMac Computer
+6dd2e4ec-c4bd-4d18-b0bb-e78644f4c061: iMac Computer
+1e9a105f-7582-4904-9a6c-ad19e1fe861c: iMac Desktop Setup
+81e1cbd5-9417-471e-a997-2b97eff6a67c: iMac Keyboard
+09bc6b62-1f93-47f6-91fc-e1cef4234516: iMac Mouse
+c80a0539-14bf-43ba-bab8-3dda91a2a421: iMac Stylus
+279aaadc-776f-4a02-9d47-93697c59a771: iPhone
+39e4ed83-ae07-40be-9935-0cb280b05acf: Lamp
+6bd71cd4-4c79-4287-8263-27f3ad7bfdd7: Lamp
+cbcae31d-6acd-4804-b3a5-c62a03c8e159: Laptop
+f81c634a-ad6d-4bed-975c-1427aac3d094: Laptop
+4b109695-bfc5-424b-88e7-627145bf8d3c: Laptop
+f3fee42f-6d7d-4b7d-8b93-22e7c4446f2e: Laptop
+a8798dde-3bac-4b03-aedb-85b5338d3f90: Magnet
+43e9c87c-d44d-43ba-9134-65656d4a2983: Magnet
+8feb719f-5b3a-4ffd-9d08-740df8d50b26: Magnet
+cda406eb-58c9-4948-8116-b438312bfbc4: Magnet
+c650b4f3-15d6-45e2-9cb2-f54dd0b71a64: Magnet
+9d73b349-666b-444b-a093-7dcb3e01ffe6: Magnet
+448c7c3f-a84d-4dc8-8f33-3edb7888241c: Magnet
+e2a13e34-61de-45ac-a87f-b9eda65cca04: Magnet
+f913d815-00f2-49b1-9108-9414abfbef79: Magnet
+2aaa8cda-b175-42a5-85ce-c6af95909564: Magnet
+32e21cbb-6249-4ffe-ae68-6e765c6095f1: Magnet
+29159d2a-9bda-4421-8bfb-86a91bb24041: Magnet
+f003d815-00f2-49b1-9108-9414abfbef79: Magnet
+2baa8cda-b175-42a5-85ce-c6af95909564: Magnet
+dda406eb-58c9-4948-8116-b438312bfbc4: Magnet
+97e6b468-d6be-412b-bbe8-47136f4e4e18: Magnet
+e76fe94c-cd27-41e1-a438-9b2498a653e7: MIDI Keyboard
+7e40df52-f3a9-4098-8256-2cdbbb7096ee: Oculus Quest 2
+d1cd9c9a-10d0-4146-ae6e-5fe159289939: Oculus Quest 3
+cff31c89-9af7-4c79-8feb-0e19f56cca5e: Oculus Quest 3
+34909501-bb77-4c55-8383-3685b24d03da: Oculus Quest 3
+46933f6a-f39b-42b7-a0af-240270af5a95: Oculus Quest 3
+0bc15607-d847-44cd-9f65-27bd47131fba: Oculus Quest 3
+49c5244e-71c4-425c-8293-9786713f5349: Oculus Quest 3
+bdfec8b1-e4c6-40af-aa96-d617a9a05b91: Oculus Quest 3
+92d119c9-5313-4438-b404-984edeb8ed7b: Oculus Quest 3
+debe267c-d4e8-4364-8425-3e3ea1e97d3a: Oculus Quest 3
+4d914cdf-e076-4615-94b0-6ebdaadab388: Oculus Quest 3
+7df30a9b-5d11-42c4-a6c0-f06bac9f7900: Oculus Quest 3
+a5005316-3132-4b8b-a9f2-a917665dd4e7: Oculus Quest 3
+a9ca6ec3-4344-4613-9edb-6c4102727112: Oculus Quest 3
+e603419d-cfb8-4623-9519-03e71e8f2d99: Oculus Quest 3
+da410172-5467-4d3e-b11e-ec4d0cfedd53: Oculus Quest 3
+897a633c-6f62-47a6-b71b-07c1e8215e47: Oculus Quest 3
+0ef0d6f9-ce02-45a7-819a-46adcb3db23e: Oculus Quest 3
+3f282cfe-b485-497d-aa24-073e3b6a2334: Oculus Quest 3
+ba736e56-3bb3-4857-a87d-820bad185dba: Office Chair
+b576e284-2d27-4a16-9f13-d28bef9cc74c: Office Chair
+3ba0197d-304b-4679-915f-910938225ac4: Office Chair
+c475cd95-533d-456d-988e-3512ee9884ee: Office Chair
+733888ae-24ce-4358-8460-cd9185e2a6d0: Office Chair
+282e351f-72ab-4323-8cad-c0f8f540ef77: Office Chair
+ff06b0fc-4ad3-49c0-a091-db2c66b45073: Office Chair
+159eda2e-6360-4c57-9399-2cc868926ab8: Office Chair
+991b1434-41d2-4374-bac7-dfa53f5c1e61: Office Chair
+73936289-db5d-497e-b27e-18e7d64e17dd: Office Chair
+f34fedfc-1e63-450a-841e-4e8d182470c6: Office Desk
+06264ebd-463b-421e-b3b4-5bf73f420726: Office Desk
+ecd359d5-2cb8-4787-a4ba-6ff065d74fc9: Office Desk
+74c1a1c7-a3f5-4284-981f-a54b99971979: Office Desk
+15f447aa-aec3-4b6d-b45b-e0f79c34ecd1: Office Desk
+815001f3-5174-4455-a2d5-966249b61d96: Office Desk
+04254292-e325-47f9-a045-4f4723a0005c: Office Desk
+7ff84ae5-659d-4f91-8c4f-9783c7097494: Office Desk
+fda4eeb3-573c-4972-9207-d2fb328f2edb: Office Desk
+a255414f-7935-49c5-890f-ccea6b7a4e61: Office Desk
+1718ed9b-848f-4f16-8402-acd51df802b5: Office Desk
+ba15bce3-4ed1-495b-81e3-b49dfc49a656: Office Desk
+447d0cf9-d746-45a0-86c9-fead570d1c24: Office Desk
+dab35f6b-b6a2-4bea-8a87-db50734cd4b4: Office Floor
+67859622-5837-45b8-97a8-cf97e24afea6: Portable Whiteboard Frame
+96c4a398-f6da-45d2-b9b9-7da434e60550: Poster
+cb53ee46-6a7a-4756-a9a7-d0354bea107e: Poster
+a6a14b4d-a39e-4e4e-9f48-85fbbaa2bc5c: Poster
+6aa69f0f-6655-42c6-b8e2-9708d762a718: Poster
+bb4a2d58-f322-4c63-82b5-7d076664f649: Quest 2 Box
+3a8380e9-abf4-4471-8c35-7548f3e11fa1: Quest touch controller
+07a8ffba-1175-46bd-9a21-9cba67e1388c: Quest touch controller
+fc700ff0-1b22-4563-8c9d-c7a76d693a03: Shelf
+6e2caaca-edc1-450d-8040-2f7e7d6db135: Shelf
+c40055a3-e1de-47c5-9360-e50bb8590717: Shelf
+3aa546be-24c6-4aa6-adcb-9a4819a18bf1: Sofa
+ef94223b-6f25-476b-b834-27579cbb9ab4: Stapler
+c9e5a8e9-0621-479f-a1da-b0285750ada8: Stapler
+4aa7200a-efc6-45f4-aaeb-d936c64df2dc: Stapler
+398729e9-fa2b-4b26-8135-1113bf1cf391: Stapler
+85ad1ce6-d2f0-4dd3-ad87-11fe61c2b3cc: Table
+b9d2df64-60b0-47d6-a873-e9b321f6464e: Trash
+40a5ef73-ca8f-41e0-98a7-7040f7505308: Trash
+a9cd3d5d-f452-46e9-a2b9-bd615d818b02: Trash
+4eceddbf-b451-4ba4-8daa-98354c1246d2: Trash
+d35291b2-60c1-4d60-8c8a-b8796e9598b4: Trash
+002f780b-dfb4-4639-a77a-880f5422bb6a: Trash
+930dd455-c2cd-4e59-911b-60f92bbf178e: Trash
+f578ca8a-d741-49b8-bf5f-a43bdac8e813: Trash Bin
+95ce2e76-dca5-4bb6-85ca-59886889fa73: Trash Bin
+f3cd03d5-04f0-4b49-9742-ab19261cc4ac: Trash Bin
+ffee2f9d-5850-454a-a0b9-ffa24e2b8c16: Wall
+04904057-5f66-4b81-90bf-c089a8255fb4: Wall
+a6f90aff-4617-4271-8670-7410790c1af8: Wall
+41708343-9781-46e7-b060-8ff9d8826839: Wall
+04033df3-5177-48eb-b861-71226b7c8c90: Wall Rack
+e4db8168-d0d3-4785-ad97-982d2af6645a: Whiteboard
+### Main object of interest
+"office desk"
+
+
+
+===================================================================================================================
+STEP 4a --> JSON response from LLM
+===================================================================================================================
+{
+  "object_matches":[
+    {"id":"f34fedfc-1e63-450a-841e-4e8d182470c6"},
+    {"id":"06264ebd-463b-421e-b3b4-5bf73f420726"},
+    {"id":"ecd359d5-2cb8-4787-a4ba-6ff065d74fc9"},
+    {"id":"74c1a1c7-a3f5-4284-981f-a54b99971979"},
+    {"id":"15f447aa-aec3-4b6d-b45b-e0f79c34ecd1"},
+    {"id":"815001f3-5174-4455-a2d5-966249b61d96"},
+    {"id":"04254292-e325-47f9-a045-4f4723a0005c"},
+    {"id":"7ff84ae5-659d-4f91-8c4f-9783c7097494"},
+    {"id":"fda4eeb3-573c-4972-9207-d2fb328f2edb"},
+    {"id":"a255414f-7935-49c5-890f-ccea6b7a4e61"},
+    {"id":"1718ed9b-848f-4f16-8402-acd51df802b5"},
+    {"id":"ba15bce3-4ed1-495b-81e3-b49dfc49a656"},
+    {"id":"447d0cf9-d746-45a0-86c9-fead570d1c24"}
+  ]
+}
+
+
+
+===================================================================================================================
+STEP 4b --> A prompt is sent to LLM with all descriptsion+uuids of scene objects to match with main object
+===================================================================================================================
+You are an API-style assistant.
+Return **one valid JSON object** whose single top-level key is "object_matches".
+
+Each element of "object_matches" must be an object with **exactly**:
+  • "id" – the unique object ID that best matches the user's target description
+
+Matching logic
+1. Only include IDs that appear in the scene inventory.
+2. A match is a **case-insensitive semantic description overlap**.
+   – Look at the *meaning* of the main object phrase and the natural-language descriptions.
+   - If main object is 'none' you must determine the description of the object of main focus in the users command. Ignore all other objects.
+   – Synonyms, hypernyms, colour/shape/material/function cues, and brand/model hints all count.
+3. If multiple items plausibly match, include **all**; otherwise include the best item(s).
+4. Begin with a broad set of plausible candidates, eliminating only clear mismatches at first. Then, iteratively refine the candidate list by applying increasingly specific semantic, functional, or contextual constraints from the user input. Do not attempt to find the perfect match in a single pass — favor a step-by-step narrowing strategy.
+5. If you find no matches do one final check based on deep reasoing (e.g. User command: "I want out of here"  could match with text describing a door)
+5. If *nothing* plausibly matches, respond with an empty list: {"object_matches": []}
+6. Return no additional keys, comments, or trailing commas.
+
+### Format Examples
+Example 'Scene inventory':
+000001: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+000002: Black Laptop computer. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+000003: Silver Apple Macbook Pro Laptop Computer. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+000004: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+000005: Apple iMac Desktop computer. This is a sleek, upright screen with a thin profile and a reflective surface, supported by a metallic stand. In front of it sits a flat, low-profile input device with a smooth, dark gray or black finish.. The setup is designed for both visual display and interactive input, combining form and function in a minimal, modern style.
+000006: Silver Dell Laptop computer. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+Example 'Main object':
+"The silver apple laptop"
+Example 'User command':
+"Select the laptop on the desk in the hallway. The silver laptop. Not the Dell laptop, but the apple one."
+
+Assistant:
+{
+  "object_matches":[
+    {"id":"000003"}
+  ]
+}
+
+Note in the next example the main object is reinterpreted as 'The device used to browse the web'
+Example 'Main object':
+"none"
+Example 'User command':
+"Select the device I can use to browse the web, the thing on top of the desk in the office"
+
+Assistant:
+{
+  "object_matches":[
+    {"id":"000002"},
+    {"id":"000003"},
+    {"id":"000005"},
+    {"id":"000006"}
+  ]
+}
+
+### Assistant scratchpad
+(Think step-by-step here. Do **not** output this section.)
+
+### Response
+(Output the final JSON only.)
+
+### Scene inventory
+9432f9f8-4355-4eb0-aa3f-86f1f083ff96: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+90390ad1-f1b8-4de1-a19b-d498886c8863: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+8568f42e-5156-4b30-855d-fd657a169e33: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+255f15cd-9b7f-45ed-a063-20b84d9e700c: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+79bef981-39dc-4747-8d5b-7e2260c528eb: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+fe479382-0597-45e2-8595-3667797dabcd: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+08b3fa68-79bb-4aad-b014-a62e155aad23: Storage Cabinet. This is a rectangular, enclosed storage unit that is mounted high on a vertical surface without touching the ground. It has a solid front and sides, with doors that swing or lift open to reveal internal space. Its design allows it to remain suspended, creating open space underneath while keeping items stored above arm level.
+1518abb0-0400-4924-8f7e-3466dc857c30: Left Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+2d586525-01e1-4d80-a332-51135b04b555: Left Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+517c97d1-60de-45c9-accd-497a6c8906a5: Left Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+3802c1ac-aa9f-4f3f-a18d-54297f78e7bf: Left Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+d0f4c799-f6bd-4447-bdc9-b3f1bcdcf427: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+7a3bf6ba-2671-4e06-b463-5a9bdc167e67: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+33f0d553-0e65-4ea2-b590-167165a62e2e: Left Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+739de7d8-4131-4fa4-86aa-b7f85cf4f833: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+87912380-155e-4020-924d-c6eb70302f95: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+0bcc4ad9-eacc-42c2-8e7e-f0abb12d2c06: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+5b1cb405-4b1d-4d57-b6a3-0db12622cafe: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+42269b00-7ae3-4ff4-b380-77cab482634e: Right Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+c656c02f-bf19-4aa5-8755-ef9a8c389add: Left Cabinet Door. These are flat, rectangular panels attached to the front of a mounted storage unit. They swing or lift open to allow access to the interior and close to conceal what’s inside. The surface is smooth and aligned with the edges of the unit, forming a clean, continuous front when shut.
+1e21ade8-4f32-41e2-be08-abefedd13ba4: Calendar
+ac33c400-f7db-49ef-9b82-92eb59e57873: A ceiling is the flat surface that forms the top boundary of a room. It stretches overhead across the space, and is usually out of reach.
+1e9deca6-7973-458e-9553-cc64e1abda91: Ceiling Fan. This is a suspended fixture mounted above, featuring a central hub from which four long, flat wooden blades extend outward. The blades are evenly spaced and rotate in a circular motion to move air through the space. The design combines natural material with functional movement, and it remains fixed in place while spinning overhead.
+25f4145c-9bc8-4ed3-975e-f08886414a58: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+8edf541b-daac-428d-bb04-71d39cb7d2de: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+0d41ec23-ed17-4d09-be3a-cda856c723b2: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+d6406a6d-2941-422b-a596-802a36c1ef13: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+dad16371-bd35-4cc0-ae6f-ba250a8dba7e: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+e1bc7f02-ba7a-4791-aba3-2cbee6e1d363: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+9fa02371-da6c-4c57-81fc-16c9d4a869cc: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+64d35939-ff74-4ebd-8cd7-c4d1a0deb7bb: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+371a6c23-2216-4327-8992-af1153e76da4: Ceiling Fan Light. This is a built-in light source positioned at the center of an overhead fixture with moving parts. It remains stationary while the surrounding structure rotates and is designed to illuminate the area below. The light is enclosed within a compact housing and shares its mount with the larger fixture above.
+513bb7fa-cf25-4d32-901a-c419bccb9d7d: White Chalk. This is a small, lightweight stick with a soft, powdery texture and a bright white color. It leaves visible marks when pressed against a rough surface and can be easily broken or worn down with use. The material is dry to the touch and crumbles slightly when handled.
+bd112ebd-09b7-479e-a888-60aab41c4c7c: White Chalk. This is a small, lightweight stick with a soft, powdery texture and a bright white color. It leaves visible marks when pressed against a rough surface and can be easily broken or worn down with use. The material is dry to the touch and crumbles slightly when handled.
+d0b8bba6-789e-412b-91db-b84c4dfa3d46: White Chalk. This is a small, lightweight stick with a soft, powdery texture and a bright white color. It leaves visible marks when pressed against a rough surface and can be easily broken or worn down with use. The material is dry to the touch and crumbles slightly when handled.
+c1e34f33-554f-4a3e-ad06-ee172d7e1265: Chalkboard. This is a flat, rectangular surface with a dark, matte finish, bordered by a smooth wooden frame. The surface is firm and slightly textured, allowing for temporary markings that can be written and easily wiped away. The frame provides structural support and adds a natural, solid edge to the overall design.
+9e919f65-c795-46e6-9ac2-b4357e0ff183: Chalkboard. This is a flat, rectangular surface with a dark, matte finish, bordered by a smooth wooden frame. The surface is firm and slightly textured, allowing for temporary markings that can be written and easily wiped away. The frame provides structural support and adds a natural, solid edge to the overall design.
+9977ad1f-faa1-4655-b2f0-c07d069c208c: Chalkboard. This is a flat, rectangular surface with a dark, matte finish, bordered by a smooth wooden frame. The surface is firm and slightly textured, allowing for temporary markings that can be written and easily wiped away. The frame provides structural support and adds a natural, solid edge to the overall design.
+6b2e5460-acec-409f-9888-337728f9f1c7: Black wireless Computer Keyboard. This is a flat, rectangular device with many small, pressable sections arranged in rows. Each section produces a specific input when pressed, allowing the user to enter letters, numbers, or commands into a system. The surface is smooth, and the layout is designed for two-handed use, typically placed in front of the user.
+939bce90-292c-425c-8ed4-dbbbe89f7042: Black wireless Computer Keyboard. This is a flat, rectangular device with many small, pressable sections arranged in rows. Each section produces a specific input when pressed, allowing the user to enter letters, numbers, or commands into a system. The surface is smooth, and the layout is designed for two-handed use, typically placed in front of the user.
+36ccfcd5-8621-42aa-8de7-9aa8d7a4ae5e: Black wireless Computer Keyboard. This is a flat, rectangular device with many small, pressable sections arranged in rows. Each section produces a specific input when pressed, allowing the user to enter letters, numbers, or commands into a system. The surface is smooth, and the layout is designed for two-handed use, typically placed in front of the user.
+32de93a6-9875-4047-a723-ee2ec675111d: White Mechanical Computer Keyboard. This is a flat, rectangular device with many small, pressable sections arranged in rows. Each section produces a specific input when pressed, allowing the user to enter letters, numbers, or commands into a system. The surface is smooth, and the layout is designed for two-handed use, typically placed in front of the user.
+22169654-a457-4424-b10a-e32145a67243: Black wireless Computer Keyboard. This is a flat, rectangular device with many small, pressable sections arranged in rows. Each section produces a specific input when pressed, allowing the user to enter letters, numbers, or commands into a system. The surface is smooth, and the layout is designed for two-handed use, typically placed in front of the user.
+c276037a-a7e0-4520-8248-5db668f2f0c2: Black Computer Monitor. This is a large, upright screen with a flat, rectangular shape and a smooth surface. It’s supported by a sturdy stand that sits on a flat rectangular base, keeping the screen elevated and stable. The front surface displays visual output, and the structure is designed to stay stationary on a surface while facing towards a user.
+f7732f2e-6080-4cda-aa9d-0507f20b32d3: Black Computer Monitor. This is a large, upright screen with a flat, rectangular shape and a smooth surface. It’s supported by a sturdy stand that sits on a flat rectangular base, keeping the screen elevated and stable. The front surface displays visual output, and the structure is designed to stay stationary on a surface while facing towards a user.
+6bda498e-b786-4bac-874f-8f613ee14ab1: Black Computer Monitor. This is a large, upright screen with a flat, rectangular shape and a smooth surface. It’s supported by a sturdy stand that sits on a flat rectangular base, keeping the screen elevated and stable. The front surface displays visual output, and the structure is designed to stay stationary on a surface while facing towards a user.
+78d07567-d4c3-4862-afc9-d51b3a5bad5d: Black Computer Monitor. This is a large, upright screen with a flat, rectangular shape and a smooth surface. It’s supported by a sturdy stand that sits on a flat rectangular base, keeping the screen elevated and stable. The front surface displays visual output, and the structure is designed to stay stationary on a surface while facing towards a user.
+71971aa6-d317-47fa-b8b0-98b538e0668d: Black Computer Monitor. This is a large, upright screen with a flat, rectangular shape and a smooth surface. It’s supported by a sturdy stand that sits on a flat rectangular base, keeping the screen elevated and stable. The front surface displays visual output, and the structure is designed to stay stationary on a surface while facing towards a user.
+e1e8d891-0969-48ec-99bc-b4c05acfa465: Black wireless Computer mouse. This is a small, rounded device that fits comfortably in the hand. It has a smooth black surface and operates without any visible cords, allowing it to move freely. Its shape allows for easy movement and control, often used to guide or select items within a digital environment.
+b04f7bc1-5e3f-42b4-ac12-e07187d41093: Black wireless Computer mouse. This is a small, rounded device that fits comfortably in the hand. It has a smooth black surface and operates without any visible cords, allowing it to move freely. Its shape allows for easy movement and control, often used to guide or select items within a digital environment.
+489ddb6c-2fb0-4770-83a8-7795aa9a6aea: Black wireless Computer mouse. This is a small, rounded device that fits comfortably in the hand. It has a smooth black surface and operates without any visible cords, allowing it to move freely. Its shape allows for easy movement and control, often used to guide or select items within a digital environment.
+419144ac-b317-4914-911a-76b1b7e23339: Black wireless Computer mouse. This is a small, rounded device that fits comfortably in the hand. It has a smooth black surface and operates without any visible cords, allowing it to move freely. Its shape allows for easy movement and control, often used to guide or select items within a digital environment.
+d31039b4-c79d-4c00-ad5e-d08ca306010d: Wooden Corner Office Desk. This is a large, flat-topped structure that fits into a corner, forming an angled or L-shaped layout. It has smooth, straight edges and is made of solid, natural material with a warm, textured surface. It’s supported by sturdy panels or legs and provides a stable horizontal area at about waist height for a person to sit at and do work on top of.
+3f515c39-98cb-4e07-9664-517a1857d64f: Green Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+baf9c316-1e8b-485f-86a2-d9debffd9618: Red Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+a1dd3af3-338a-49f2-a021-3e43f730ab9d: Blue Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+e2cebd2c-15f1-44ba-b1d7-e73271ccc312: Yellow Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+335c1cf1-c816-4cce-9ed0-e317eb21fca4: Blue Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+ced786e3-38de-4a80-8a01-b746ce10cde1: Yellow Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+5bbbc03d-83bb-4628-a8af-119cbe7fa625: Blue Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+43fe3398-6683-4c05-b56a-4e1a4cddc181: Yellow Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+56396897-cda5-4009-a9e7-cb92a2e1fcab: Blue Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+43668a42-8d85-49f1-bd41-982177b5b1d4: Green Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+a80fb8b5-0e55-4eb8-83dc-e2bb91ab26e6: Green Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+e235cc7b-198b-42d3-9388-351fbb344cae: Red Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+55b3ca06-c4de-4fbf-958a-d4a9bfc9343b: Blue Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+f3c92403-0685-4c63-a026-f6a824ce7665: Blue Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+e8592514-42d4-4d35-aae4-2f6d5d8005da: Red Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+042e6b36-caf1-4de9-89dc-9a9919443eb7: Green Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+3c10629a-5731-4df7-8d3c-e5a626e10939: Red Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+7cdb9b90-f989-48cc-b3e8-efa9663e8418: Yellow Cube. This is a small, six-sided shape with equal-length edges and smooth, flat faces. Each face is the same solid color, and the overall form is symmetrical and compact. Slightly too large to fit in someones hand and has a clean, uniform appearance from all angles.
+b0951860-9037-4412-b8b4-7aacd0f83ce9: A desktop computer with a large monitor, a black keyboard, and a black wireless mouse.
+0301e3e1-9720-43bc-b5c0-0b614daf32ae: A desktop computer with a large monitor, a black keyboard, and a black wireless mouse.
+1a6bb286-827c-4c9e-ad54-b07ae7a3c242: A desktop computer with a large monitor, a black keyboard, and a black wireless mouse.
+7424d901-d398-4130-adab-fbf36d87b437: A desktop computer with a large monitor, a black keyboard, and a black wireless mouse.
+ea6ddbbc-e3d7-4ed6-9962-43c167dad89f: A desktop computer with a large monitor, a black keyboard, and a white wireless mouse.
+46d3d3e9-3d4f-4a7d-a368-c88cf53f3d97: Door with a thin vertical window. This is a tall, flat surface that swings open and closed to allow or block entry. Attached to one side is a long, horizontal handle made of metal, which is turned downward to release the latch. The structure is solid and vertical, forming part of the room’s boundary and separating it from an adjoining space.
+d2c88da2-645f-43fd-b721-adbefb2dc62b: Door with a thin vertical window. This is a tall, flat surface that swings open and closed to allow or block entry. Attached to one side is a long, horizontal handle made of metal, which is turned downward to release the latch. The structure is solid and vertical, forming part of the room’s boundary and separating it from an adjoining space.
+32bfcdb0-f6b9-4e39-9af5-5e9fc93c01fa: Red Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+6da9dc23-507a-44c0-8fb3-d563851fa538: Green Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+e13151c5-5a16-41d3-9d0d-d4c7dbf70a92: Yellow Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+d63d0923-a9e3-4afd-84d3-d93f24d73861: Red Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+837ad43d-b080-41be-b9e0-057fca995088: Yellow Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+6229b035-0ee9-4de6-b398-8ff0ebe32f8c: Red Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+065b214d-c0c1-42fe-ab2a-68963bf1dd6f: Orange Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+4fcc0f03-2128-437c-a8de-895c65fd2fd7: Red Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+81e25fe0-3c67-44e8-ad93-5af22957ea56: Yellow Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+d7378930-c290-47c1-ad9e-309c42391be3: Yellow Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+e0adcb21-bc37-4ad2-b610-8b257c788f2a: Blue Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+ced22f65-5cd8-40a6-ac58-f74dc0395a79: Red Filing Cabinet. This is a rectangular shaped metal box, with drawers that slide in and out of it. It is generally placed on the ground in an office for the purpose of storing office supplies and files. It may or may not be lockable.
+d556993b-6e46-43ec-b379-5555220c087c: Apple iMac Computer with a silver keyboard and a red wireless mouse. This is a sleek, upright screen with a thin profile and a reflective surface, supported by a metallic stand. In front of it sits a flat, low-profile input device with a smooth, silver finish, and beside it is a small, curved control device in a bright red color. The setup is designed for both visual display and interactive input, combining form and function in a minimal, modern style.
+6dd2e4ec-c4bd-4d18-b0bb-e78644f4c061: Apple iMac Desktop computer. This is a sleek, upright screen with a thin profile and a reflective surface, supported by a metallic stand. In front of it sits a flat, low-profile input device with a smooth, dark gray or black finish.. The setup is designed for both visual display and interactive input, combining form and function in a minimal, modern style.
+1e9a105f-7582-4904-9a6c-ad19e1fe861c: iMac Desktop Computer with an extra wide monitor, a silver keyboard, and a silver wireless mouse.
+81e1cbd5-9417-471e-a997-2b97eff6a67c: Apple iMac Keyboard. This is a flat, rectangular device with many small, pressable sections arranged in rows. Each section produces a specific input when pressed, allowing the user to enter letters, numbers, or commands into a system. The surface is smooth, and the layout is designed for two-handed use, typically placed in front of the user.
+09bc6b62-1f93-47f6-91fc-e1cef4234516: Apple iMac Mouse. This is a small, rounded device that fits comfortably in the hand. It has a smooth black surface and operates without any visible cords, allowing it to move freely. Its shape allows for easy movement and control, often used to guide or select items within a digital environment.
+c80a0539-14bf-43ba-bab8-3dda91a2a421: iMac Stylus Pen. This is a slender, pen-shaped device designed to be held in the hand. It has a smooth, tapered body and a fine tip that responds to contact with a screen. It allows for precise movement, writing, or drawing in a digital environment, often used as an alternative to touch or other input methods.
+279aaadc-776f-4a02-9d47-93697c59a771: Silver Apple iPhone. This is a small, rectangular handheld device with a smooth, metallic surface and rounded edges. Its color is light and reflective, with a silver-toned finish that gives it a sleek, modern appearance.
+39e4ed83-ae07-40be-9935-0cb280b05acf: White adjustable desk lamp. This is a small, adjustable light source with a rounded base and a long, jointed arm that can bend at several points. The top ends in a cone-shaped shade that directs light downward. Its surface is smooth and white, and the design allows the height and angle of the light to be easily changed.
+6bd71cd4-4c79-4287-8263-27f3ad7bfdd7: White adjustable desk lamp. This is a small, adjustable light source with a rounded base and a long, jointed arm that can bend at several points. The top ends in a cone-shaped shade that directs light downward. Its surface is smooth and white, and the design allows the height and angle of the light to be easily changed.
+cbcae31d-6acd-4804-b3a5-c62a03c8e159: Silver and Black Laptop computer. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+f81c634a-ad6d-4bed-975c-1427aac3d094: Red Laptop computer. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+4b109695-bfc5-424b-88e7-627145bf8d3c: Silver Apple Macbook Pro Laptop Computer. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+f3fee42f-6d7d-4b7d-8b93-22e7c4446f2e: Black Laptop computer with Nvidia gpu. A thin, rectangular device with a hinged design that allows it to open and close like a clamshell. It has a smooth, metallic surface with a light silver finish, rounded corners, and a minimalist appearance. When open, the vertical section has a screen and the flat horizontal section has a keyboard and trackpad.
+a8798dde-3bac-4b03-aedb-85b5338d3f90: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+43e9c87c-d44d-43ba-9134-65656d4a2983: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+8feb719f-5b3a-4ffd-9d08-740df8d50b26: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+cda406eb-58c9-4948-8116-b438312bfbc4: Blue whiteboard magnet. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+c650b4f3-15d6-45e2-9cb2-f54dd0b71a64: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+9d73b349-666b-444b-a093-7dcb3e01ffe6: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+448c7c3f-a84d-4dc8-8f33-3edb7888241c: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+e2a13e34-61de-45ac-a87f-b9eda65cca04: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+f913d815-00f2-49b1-9108-9414abfbef79: Green whiteboard magnet. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+2aaa8cda-b175-42a5-85ce-c6af95909564: Red whiteboard magnet. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+32e21cbb-6249-4ffe-ae68-6e765c6095f1: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+29159d2a-9bda-4421-8bfb-86a91bb24041: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+f003d815-00f2-49b1-9108-9414abfbef79: Green whiteboard magnet. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+2baa8cda-b175-42a5-85ce-c6af95909564: Red whiteboard magnet. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+dda406eb-58c9-4948-8116-b438312bfbc4: Blue whiteboard magnet. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+97e6b468-d6be-412b-bbe8-47136f4e4e18: Yellow whiteboard magnet shape. These are smooth, round items with a flat top and bottom and a gently curved edge, shaped like shallow discs. Each one is about the size of a palm and made from a solid material that attracts certain metals. They feel cool and slightly heavy for their size, and they can firmly attach to compatible surfaces without moving.
+e76fe94c-cd27-41e1-a438-9b2498a653e7: Red and Black MIDI Music Keyboard. This is a compact, rectangular device with a row of 25 narrow, pressable sections arranged in alternating light and dark colors, also having 8 pads and 8 knobs. Each section produces a digital signal when pressed, allowing the device to control sound or music in another system. It’s typically used to create, modify, or perform musical notes electronically. The surface is smooth, and the overall size is small enough to fit on a tabletop or be carried by hand
+7e40df52-f3a9-4098-8256-2cdbbb7096ee: Meta Oculus Quest 2 Head-mounted display. This is a wearable device designed to cover the eyes and fit securely around the head. It has a smooth, curved front and an adjustable strap system. When worn, it displays immersive visuals directly in front of the user’s eyes and responds to head movements, allowing interaction within a digital environment.
+d1cd9c9a-10d0-4146-ae6e-5fe159289939: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+cff31c89-9af7-4c79-8feb-0e19f56cca5e: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+34909501-bb77-4c55-8383-3685b24d03da: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+46933f6a-f39b-42b7-a0af-240270af5a95: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+0bc15607-d847-44cd-9f65-27bd47131fba: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+49c5244e-71c4-425c-8293-9786713f5349: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+bdfec8b1-e4c6-40af-aa96-d617a9a05b91: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+92d119c9-5313-4438-b404-984edeb8ed7b: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+debe267c-d4e8-4364-8425-3e3ea1e97d3a: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+4d914cdf-e076-4615-94b0-6ebdaadab388: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+7df30a9b-5d11-42c4-a6c0-f06bac9f7900: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+a5005316-3132-4b8b-a9f2-a917665dd4e7: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+a9ca6ec3-4344-4613-9edb-6c4102727112: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+e603419d-cfb8-4623-9519-03e71e8f2d99: Meta Oculus Quest 3 head-mount display (HMD). This is a wearable device designed to cover the eyes and fit securely around the head. It has a smooth, curved front and an adjustable strap system. When worn, it displays immersive visuals directly in front of the user’s eyes and responds to head movements, allowing interaction within a digital environment.
+da410172-5467-4d3e-b11e-ec4d0cfedd53: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+897a633c-6f62-47a6-b71b-07c1e8215e47: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+0ef0d6f9-ce02-45a7-819a-46adcb3db23e: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+3f282cfe-b485-497d-aa24-073e3b6a2334: Meta Oculus Quest 3 head-mounted-display. Device for mixed and virtual reality
+ba736e56-3bb3-4857-a87d-820bad185dba: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+b576e284-2d27-4a16-9f13-d28bef9cc74c: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+3ba0197d-304b-4679-915f-910938225ac4: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+c475cd95-533d-456d-988e-3512ee9884ee: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+733888ae-24ce-4358-8460-cd9185e2a6d0: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+282e351f-72ab-4323-8cad-c0f8f540ef77: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+ff06b0fc-4ad3-49c0-a091-db2c66b45073: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+159eda2e-6360-4c57-9399-2cc868926ab8: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+991b1434-41d2-4374-bac7-dfa53f5c1e61: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+73936289-db5d-497e-b27e-18e7d64e17dd: Office Chair. This is a wheeled seat with a five-pointed base in a light, metallic tone, each end fitted with a blocky roller for easy movement. The upright back portion is made of a breathable mesh material, and the arm supports and seat height can be adjusted. Its design is meant to provide comfort and mobility while seated.
+f34fedfc-1e63-450a-841e-4e8d182470c6: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+06264ebd-463b-421e-b3b4-5bf73f420726: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+ecd359d5-2cb8-4787-a4ba-6ff065d74fc9: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+74c1a1c7-a3f5-4284-981f-a54b99971979: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+15f447aa-aec3-4b6d-b45b-e0f79c34ecd1: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+815001f3-5174-4455-a2d5-966249b61d96: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+04254292-e325-47f9-a045-4f4723a0005c: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+7ff84ae5-659d-4f91-8c4f-9783c7097494: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+fda4eeb3-573c-4972-9207-d2fb328f2edb: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+a255414f-7935-49c5-890f-ccea6b7a4e61: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+1718ed9b-848f-4f16-8402-acd51df802b5: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+ba15bce3-4ed1-495b-81e3-b49dfc49a656: Yellow Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+447d0cf9-d746-45a0-86c9-fead570d1c24: Blue Office Desk. This is a large, flat-topped structure with straight edges and a rectangular shape. It’s supported by sturdy legs or panels, made of cool, hard material with a smooth or brushed surface. It’s designed to provide a stable horizontal area at about waist height, for a person to sit at and do work on top of.
+dab35f6b-b6a2-4bea-8a87-db50734cd4b4: Hardwood flooring is a smooth, solid surface that covers the bottom of a room. It’s made of long, flat pieces with a firm texture and a natural, grainy appearance. It doesn’t shift underfoot and runs across the entire base of the space.
+67859622-5837-45b8-97a8-cf97e24afea6: Portable Whiteboard frame. This is a tall, rectangular structure made of lightweight metal with a smooth, silver finish. It stands upright on four black rollers, allowing it to move easily across flat surfaces. The frame is designed to hold a large, flat panel securely in place while remaining stable and mobile. Whiteboard frame. This is a tall, rectangular structure made of lightweight metal with a smooth, silver finish. It stands upright on four black rollers, allowing it to move easily across flat surfaces. The frame is designed to hold a large, flat panel securely in place while remaining stable and mobile.
+96c4a398-f6da-45d2-b9b9-7da434e60550: Poster of honda civic and mount fuji. This is a flat, flexible sheet attached to a vertical surface. It is rectangular, lightweight, and lies flush against the background. Its purpose is to display visual or written information, and it remains fixed in place without protruding outward.
+cb53ee46-6a7a-4756-a9a7-d0354bea107e: Poster of a Dove Bird. This is a flat, flexible sheet attached to a vertical surface. It is rectangular, lightweight, and lies flush against the background. Its purpose is to display visual or written information, and it remains fixed in place without protruding outward.
+a6a14b4d-a39e-4e4e-9f48-85fbbaa2bc5c: A wanted poster of a devil or horned cartoon. This is a flat, flexible sheet attached to a vertical surface. It is rectangular, lightweight, and lies flush against the background. Its purpose is to display visual or written information, and it remains fixed in place without protruding outward.
+6aa69f0f-6655-42c6-b8e2-9708d762a718: Poster of a red bullseye or target. This is a flat, flexible sheet attached to a vertical surface. It is rectangular, lightweight, and lies flush against the background. Its purpose is to display visual or written information, and it remains fixed in place without protruding outward.
+bb4a2d58-f322-4c63-82b5-7d076664f649: Quest 2 Box. This is a rectangular container made of sturdy material, designed to hold and protect items during storage or transport. It has a lid or flaps that open and close, and its interior is currently empty. The size and shape suggest it was made to fit a specific set of contents securely.
+3a8380e9-abf4-4471-8c35-7548f3e11fa1: Left Meta Quest touch controller. This is a handheld device shaped to fit comfortably in the palm, with a circular ring that arcs outward from the top. It includes several pressable sections and a thumb-operated surface. The device is designed to detect motion and orientation, allowing precise input based on hand movements and gestures.
+07a8ffba-1175-46bd-9a21-9cba67e1388c: Right Meta Quest touch controller. This is a handheld device shaped to fit comfortably in the palm, with a circular ring that arcs outward from the top. It includes several pressable sections and a thumb-operated surface. The device is designed to detect motion and orientation, allowing precise input based on hand movements and gestures.
+fc700ff0-1b22-4563-8c9d-c7a76d693a03: Shelf
+6e2caaca-edc1-450d-8040-2f7e7d6db135: Shelf
+c40055a3-e1de-47c5-9360-e50bb8590717: Shelf
+3aa546be-24c6-4aa6-adcb-9a4819a18bf1: White Sofa or couch. This is a large, cushioned structure designed for sitting, with a broad, padded surface and a backrest that supports a reclining posture. It often includes raised sides and is wide enough to accommodate more than one person. The exterior is typically soft to the touch, offering both comfort and support.
+ef94223b-6f25-476b-b834-27579cbb9ab4: Blue and white Stapler. This is a small, handheld item with a curved top and flat base, featuring a two-tone color scheme of blue and white. Its shape includes a hinge near the back, allowing the top section to press down against the bottom. The surface is smooth, and it feels firm and compact in the hand. It is used for fastening paper together.
+c9e5a8e9-0621-479f-a1da-b0285750ada8: Blue and white Stapler. This is a small, handheld item with a curved top and flat base, featuring a two-tone color scheme of blue and white. Its shape includes a hinge near the back, allowing the top section to press down against the bottom. The surface is smooth, and it feels firm and compact in the hand. It is used for fastening paper together.
+4aa7200a-efc6-45f4-aaeb-d936c64df2dc: Blue and white Stapler. This is a small, handheld item with a curved top and flat base, featuring a two-tone color scheme of blue and white. Its shape includes a hinge near the back, allowing the top section to press down against the bottom. The surface is smooth, and it feels firm and compact in the hand. It is used for fastening paper together.
+398729e9-fa2b-4b26-8135-1113bf1cf391: Blue and white Stapler. This is a small, handheld item with a curved top and flat base, featuring a two-tone color scheme of blue and white. Its shape includes a hinge near the back, allowing the top section to press down against the bottom. The surface is smooth, and it feels firm and compact in the hand. It is used for fastening paper together.
+85ad1ce6-d2f0-4dd3-ad87-11fe61c2b3cc: Cicular wooden table. This is a round, elevated surface made of solid wood with a smooth, polished and natural finish. It stands at about waist height and is supported underneath to remain stable. The surface is broad and flat, designed to accommodate various uses while allowing people to gather around evenly.
+b9d2df64-60b0-47d6-a873-e9b321f6464e: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+40a5ef73-ca8f-41e0-98a7-7040f7505308: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+a9cd3d5d-f452-46e9-a2b9-bd615d818b02: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+4eceddbf-b451-4ba4-8daa-98354c1246d2: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+d35291b2-60c1-4d60-8c8a-b8796e9598b4: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+002f780b-dfb4-4639-a77a-880f5422bb6a: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+930dd455-c2cd-4e59-911b-60f92bbf178e: Crumbled Paper Trash or waste. This is a small, irregular mass made from a thin, lightweight material that has been compressed and wrinkled by hand. Its surface is uneven and textured, with folds and creases throughout. It has lost its original flat shape and is typically discarded after use.
+f578ca8a-d741-49b8-bf5f-a43bdac8e813: Trash or waste bin. This is a small, cylindrical container with a lightweight, open structure made from a fine metal mesh. Its surface is porous, allowing visibility and airflow, and it’s designed to sit on the floor and collect discarded items. The shape is round and the size compact, making it suitable for holding lightweight materials without taking up much space.
+95ce2e76-dca5-4bb6-85ca-59886889fa73: Trash or waste bin. This is a small, cylindrical container with a lightweight, open structure made from a fine metal mesh. Its surface is porous, allowing visibility and airflow, and it’s designed to sit on the floor and collect discarded items. The shape is round and the size compact, making it suitable for holding lightweight materials without taking up much space.
+f3cd03d5-04f0-4b49-9742-ab19261cc4ac: Trash or waste bin. This is a small, cylindrical container with a lightweight, open structure made from a fine metal mesh. Its surface is porous, allowing visibility and airflow, and it’s designed to sit on the floor and collect discarded items. The shape is round and the size compact, making it suitable for holding lightweight materials without taking up much space.
+ffee2f9d-5850-454a-a0b9-ffa24e2b8c16: A wall is a flat, upright surface that forms the edge of a room. It doesn’t move, marking where the room ends, separating it from other rooms. Walls are often connected to other walls.
+04904057-5f66-4b81-90bf-c089a8255fb4: A wall is a flat, upright surface that forms the edge of a room. It doesn’t move, marking where the room ends, separating it from other rooms. Walls are often connected to other walls.
+a6f90aff-4617-4271-8670-7410790c1af8: A wall is a flat, upright surface that forms the edge of a room. It doesn’t move, marking where the room ends, separating it from other rooms. Walls are often connected to other walls.
+41708343-9781-46e7-b060-8ff9d8826839: A wall is a flat, upright surface that forms the edge of a room. It doesn’t move, marking where the room ends, separating it from other rooms. Walls are often connected to other walls.
+04033df3-5177-48eb-b861-71226b7c8c90: Floating mounted hanging wall rack shelf. These are three flat, horizontal wooden surfaces mounted directly onto a vertical background without visible supports. They are evenly spaced in a vertical arrangement, creating multiple levels for placing items. The surfaces are smooth and open, giving a clean, minimalist look while appearing to float on the wall.
+e4db8168-d0d3-4785-ad97-982d2af6645a: Whiteboard. This is a large, white, flat surface with a smooth, glossy finish and a rectangular shape. It’s designed for temporary markings that can be easily erased, and it typically hangs vertically or is held upright. The surface is firm and light-colored, making writing or drawing clearly visible.
+### Main object of interest
+"the blue office desk"
+
+
+
+===================================================================================================================
+STEP 4b --> JSON response from LLM
+===================================================================================================================
+{
+  "object_matches": [
+    {"id": "06264ebd-463b-421e-b3b4-5bf73f420726"},
+    {"id": "74c1a1c7-a3f5-4284-981f-a54b99971979"},
+    {"id": "15f447aa-aec3-4b6d-b45b-e0f79c34ecd1"},
+    {"id": "815001f3-5174-4455-a2d5-966249b61d96"},
+    {"id": "7ff84ae5-659d-4f91-8c4f-9783c7097494"},
+    {"id": "1718ed9b-848f-4f16-8402-acd51df802b5"},
+    {"id": "447d0cf9-d746-45a0-86c9-fead570d1c24"}
+  ]
+}
+
+
